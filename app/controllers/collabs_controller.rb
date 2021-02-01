@@ -8,6 +8,12 @@ class CollabsController < ApplicationController
     render json: @collabs
   end
 
+  # GET /edges
+  def edges
+    edges = Collab.edges
+    render json: edges.map{|elt| {source: elt[0], target: elt[1]}}
+  end
+
   # GET /collabs/1
   def show
     render json: @collab
