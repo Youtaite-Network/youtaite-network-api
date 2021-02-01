@@ -41,6 +41,6 @@ module YoutaiteNetworkApi
       end
     end
 
-    config.hosts << "localhost:8000"
+    config.hosts << "youtaite-network-api.herokuapp.com"
   end
 end
