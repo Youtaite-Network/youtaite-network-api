@@ -1,6 +1,6 @@
+Role.delete_all
 Collab.delete_all
 Person.delete_all
-Role.delete_all
 
 collabs = CSV.new(File.open('db/collabs.csv'))
 collabs.each do |row|
