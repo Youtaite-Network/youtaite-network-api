@@ -4,17 +4,7 @@ class CollabsController < ApplicationController
   # GET /collabs
   def index
     @collabs = Collab.all
-    collabs = []
-    @collabs.each do |collab|
-      url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + collab.yt_id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
-      response = HTTParty.get(url).parsed_response
-      collabs.push({
-        id: collab.id,
-        title: response['items'][0]['snippet']['title'],
-        thumbnail: response['items'][0]['snippet']['thumbnails']['standard']['url']
-      })
-    end
-    render json: collabs
+    render json: @collabs
   end
 
   # GET /edges

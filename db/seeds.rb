@@ -1,31 +1,27 @@
-# This file should contain all the record creation needed to seed the database with its default values.
-# The data can then be loaded with the rails db:seed command (or created alongside the database with db:setup).
-#
-# Examples:
-#
-#   movies = Movie.create([{ name: 'Star Wars' }, { name: 'Lord of the Rings' }])
-#   Character.create(name: 'Luke', movie: movies.first)
+collabs = CSV.new(File.open('db/collabs.csv'))
+collabs.each do |row|
+  url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + row[0] + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
+  response = HTTParty.get(url).parsed_response
+  Collab.create({
+    yt_id: row[0],
+    title: response['items'][0]['snippet']['title'],
+    thumbnail: response['items'][0]['snippet']['thumbnails']['medium']['url']
+  })
+end
 
-Collab.create(yt_id: 'RY_Q2T1Tg2k') # Hoshi no Dialogue
-Collab.create(yt_id: 'z0yKFwx8XQk') # Xtreme Vibes
-Collab.create(yt_id: 'uFDw0D4AaRY') # TftMN
-hnd = Collab.find_by(yt_id: 'RY_Q2T1Tg2k')
-xv = Collab.find_by(yt_id: 'z0yKFwx8XQk')
-tftmn = Collab.find_by(yt_id: 'uFDw0D4AaRY')
+people = CSV.new(File.open('db/people.csv'))
+people.each do |row|
+  Person.create(yt_link: row[0])
+end
 
-Person.create(yt_link: '/user/xXxAngelOfYouthxXx')
-Person.create(yt_link: '/user/sepiadayscom')
-Person.create(yt_link: '/lynsings')
-joy = Person.find_by(yt_link: '/user/xXxAngelOfYouthxXx')
-mathew = Person.find_by(yt_link: '/user/sepiadayscom')
-lyn = Person.find_by(yt_link: '/lynsings')
-
-# roles: [0 = anim, 1 = art, 2 = mix, 3 = vocal]
-Role.create(collab_id: hnd.id, person_id: mathew.id, role: :mix)
-Role.create(collab_id: hnd.id, person_id: joy.id, role: :vocal)
-Role.create(collab_id: hnd.id, person_id: lyn.id, role: :vocal)
-
-Role.create(collab_id: xv.id, person_id: joy.id, role: :vocal)
-
-Role.create(collab_id: tftmn.id, person_id: lyn.id, role: :vocal)
-Role.create(collab_id: tftmn.id, person_id: lyn.id, role: :anim)
+roles = CSV.new(File.open('db/roles.csv'))
+roles.each do |row|
+  collab_id = Collab.find_by(yt_id: row[0]).id
+  person_id = Person.find_by(yt_link: row[1]).id
+  role = row[2]
+  Role.create({
+    collab_id: collab_id,
+    person_id: person_id,
+    role: role
+  })
+end
