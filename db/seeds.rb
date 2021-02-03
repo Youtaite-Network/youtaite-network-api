@@ -7,14 +7,12 @@ collabs.each do |row|
   if row.empty?
     next
   end
-  # url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + row[0] + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
-  # response = HTTParty.get(url).parsed_response
+  url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + row[0] + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
+  response = HTTParty.get(url).parsed_response
   Collab.create({
     yt_id: row[0],
-    # title: response['items'][0]['snippet']['title'],
-    # thumbnail: response['items'][0]['snippet']['thumbnails']['medium']['url']
-    title: 'Placeholder',
-    thumbnail: "https://img.youtube.com/vi/#{row[0]}/mqdefault.jpg"
+    title: response['items'][0]['snippet']['title'],
+    thumbnail: response['items'][0]['snippet']['thumbnails']['medium']['url']
   })
 end
 
@@ -24,15 +22,25 @@ people.each do |row|
     next
   end
   misc_id = row[0]
-  id_type = :yt
+  thumbnail = '#'
   if row.length == 2 # twitter/misc link
     id_type = row[1]
-  elsif row[0].include? '['
+    display_name = "@#{misc_id}"
+  elsif row[0].include? '[' # no link
     id_type = :no_link
+    display_name = misc_id[1..-1]
+  else # yt link
+    id_type = :yt
+    url = 'https://youtube.googleapis.com/youtube/v3/channels?id=' + row[0] + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
+    response = HTTParty.get(url).parsed_response
+    display_name = response['items'][0]['snippet']['title']
+    thumbnail = response['items'][0]['snippet']['thumbnails']['default']['url']
   end
   Person.create({
     misc_id: misc_id,
-    id_type: id_type
+    id_type: id_type,
+    name: display_name,
+    thumbnail: thumbnail,
   })
 end
 
