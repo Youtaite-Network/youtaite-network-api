@@ -18,30 +18,30 @@ class CollabsController < ApplicationController
     render json: @collab
   end
 
-  # POST /collabs
-  def create
-    @collab = Collab.new(collab_params)
+  # # POST /collabs
+  # def create
+  #   @collab = Collab.new(collab_params)
 
-    if @collab.save
-      render json: @collab, status: :created, location: @collab
-    else
-      render json: @collab.errors, status: :unprocessable_entity
-    end
-  end
+  #   if @collab.save
+  #     render json: @collab, status: :created, location: @collab
+  #   else
+  #     render json: @collab.errors, status: :unprocessable_entity
+  #   end
+  # end
 
-  # PATCH/PUT /collabs/1
-  def update
-    if @collab.update(collab_params)
-      render json: @collab
-    else
-      render json: @collab.errors, status: :unprocessable_entity
-    end
-  end
+  # # PATCH/PUT /collabs/1
+  # def update
+  #   if @collab.update(collab_params)
+  #     render json: @collab
+  #   else
+  #     render json: @collab.errors, status: :unprocessable_entity
+  #   end
+  # end
 
-  # DELETE /collabs/1
-  def destroy
-    @collab.destroy
-  end
+  # # DELETE /collabs/1
+  # def destroy
+  #   @collab.destroy
+  # end
 
   private
     # Use callbacks to share common setup or constraints between actions.

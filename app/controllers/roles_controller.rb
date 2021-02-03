@@ -13,30 +13,30 @@ class RolesController < ApplicationController
     render json: @role
   end
 
-  # POST /roles
-  def create
-    @role = Role.new(role_params)
+  # # POST /roles
+  # def create
+  #   @role = Role.new(role_params)
 
-    if @role.save
-      render json: @role, status: :created, location: @role
-    else
-      render json: @role.errors, status: :unprocessable_entity
-    end
-  end
+  #   if @role.save
+  #     render json: @role, status: :created, location: @role
+  #   else
+  #     render json: @role.errors, status: :unprocessable_entity
+  #   end
+  # end
 
-  # PATCH/PUT /roles/1
-  def update
-    if @role.update(role_params)
-      render json: @role
-    else
-      render json: @role.errors, status: :unprocessable_entity
-    end
-  end
+  # # PATCH/PUT /roles/1
+  # def update
+  #   if @role.update(role_params)
+  #     render json: @role
+  #   else
+  #     render json: @role.errors, status: :unprocessable_entity
+  #   end
+  # end
 
-  # DELETE /roles/1
-  def destroy
-    @role.destroy
-  end
+  # # DELETE /roles/1
+  # def destroy
+  #   @role.destroy
+  # end
 
   private
     # Use callbacks to share common setup or constraints between actions.
