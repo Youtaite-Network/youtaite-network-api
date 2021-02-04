@@ -18,6 +18,17 @@ class CollabsController < ApplicationController
     render json: @collab
   end
 
+  # GET /collabs/info/:yt_id
+  def info
+    yt_id = params[:yt_id]
+    url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + yt_id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
+    response = HTTParty.get(url).parsed_response
+    render json: {
+      title: response['items'][0]['snippet']['title'],
+      description: response['items'][0]['snippet']['description']
+    }
+  end
+
   # # POST /collabs
   # def create
   #   @collab = Collab.new(collab_params)
