@@ -29,9 +29,9 @@ people.each do |row|
   if row.length == 2 # twitter/misc link
     id_type = row[1]
   elsif row[0].include? '[' # no link
-    id_type = :no_link
+    id_type = 'no_link'
   else # yt link
-    id_type = :yt
+    id_type = 'yt'
   end
   display_name, thumbnail = get_person_info(misc_id, id_type).values_at(:name, :thumbnail)
   Person.create({
