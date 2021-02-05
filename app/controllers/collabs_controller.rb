@@ -1,5 +1,6 @@
 class CollabsController < ApplicationController
   before_action :set_collab, only: [:show, :update, :destroy]
+  before_action :logged_in_user, only: [:info, :create]
 
   # GET /collabs
   def index
@@ -20,25 +21,24 @@ class CollabsController < ApplicationController
 
   # GET /collabs/info/:yt_id
   def info
-    yt_id = params[:yt_id]
-    url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + yt_id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
-    response = HTTParty.get(url).parsed_response
+    yt_id = collab_params[:yt_id]
+    title, description = get_collab_info(yt_id).values_at(:title, :description)
     render json: {
-      title: response['items'][0]['snippet']['title'],
-      description: response['items'][0]['snippet']['description']
+      title: title,
+      description: description
     }
   end
 
-  # # POST /collabs
-  # def create
-  #   @collab = Collab.new(collab_params)
-
-  #   if @collab.save
-  #     render json: @collab, status: :created, location: @collab
-  #   else
-  #     render json: @collab.errors, status: :unprocessable_entity
-  #   end
-  # end
+  # POST /collabs
+  def create
+    @collab = Collab.new(collab_params)
+    @collab.title, @collab.thumbnail = get_collab_info(collab_params[:yt_id]).values_at(:title, :thumbnail)
+    if @collab.save
+      render json: @collab, status: :created, location: @collab
+    else
+      render json: @collab.errors, status: :unprocessable_entity
+    end
+  end
 
   # # PATCH/PUT /collabs/1
   # def update

@@ -1,18 +1,22 @@
+include CollabsHelper
+include UsersHelper
+include PeopleHelper
+
 Role.delete_all
 Collab.delete_all
 Person.delete_all
+User.delete_all
 
 collabs = CSV.new(File.open('db/collabs.csv'))
 collabs.each do |row|
   if row.empty?
     next
   end
-  url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + row[0] + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
-  response = HTTParty.get(url).parsed_response
+  info = get_collab_info row[0]
   Collab.create({
     yt_id: row[0],
-    title: response['items'][0]['snippet']['title'],
-    thumbnail: response['items'][0]['snippet']['thumbnails']['medium']['url']
+    title: info[:title],
+    thumbnail: info[:thumbnail]
   })
 end
 
@@ -22,20 +26,14 @@ people.each do |row|
     next
   end
   misc_id = row[0]
-  thumbnail = '#'
   if row.length == 2 # twitter/misc link
     id_type = row[1]
-    display_name = "@#{misc_id}"
   elsif row[0].include? '[' # no link
     id_type = :no_link
-    display_name = misc_id[1..-1]
   else # yt link
     id_type = :yt
-    url = 'https://youtube.googleapis.com/youtube/v3/channels?id=' + row[0] + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
-    response = HTTParty.get(url).parsed_response
-    display_name = response['items'][0]['snippet']['title']
-    thumbnail = response['items'][0]['snippet']['thumbnails']['default']['url']
   end
+  display_name, thumbnail = get_person_info(misc_id, id_type).values_at(:name, :thumbnail)
   Person.create({
     misc_id: misc_id,
     id_type: id_type,
@@ -44,6 +42,10 @@ people.each do |row|
   })
 end
 
+User.create({
+  google_id: 'initial',
+})
+
 roles = CSV.new(File.open('db/roles.csv'))
 roles.each do |row|
   if row.empty?
@@ -51,12 +53,16 @@ roles.each do |row|
   end
   collab_id = Collab.find_by(yt_id: row[0]).id
   person_id = Person.find_by(misc_id: row[1]).id
+  user_id = User.find_by(google_id: 'initial').id
   role = row[2]
-  Role.create({
+  r = Role.new({
     collab_id: collab_id,
     person_id: person_id,
-    role: role
+    user_id: user_id,
+    role: role,
   })
+  r.save
+  puts r.errors.full_messages
 end
 
 # REFORMAT PEOPLE.CSV

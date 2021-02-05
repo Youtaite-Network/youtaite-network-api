@@ -34,13 +34,25 @@ module YoutaiteNetworkApi
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
+    Rails.logger = Logger.new(STDOUT)
+    config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
+
+    config.middleware.use ActionDispatch::Cookies
+    config.middleware.use ActionDispatch::Session::CookieStore
+
+
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins '*'
-        resource '*', headers: :any, methods: [:get]
+        origins 'https://youtaite-network.netlify.app', 'https://youtaite-network-test.netlify.app'
+        resource '*', 
+          credentials: true,
+          headers: :any, 
+          methods: [:get, :post],
+          expose: ['Access-Token', 'Access-Token-Expiry']
       end
     end
 
     config.hosts << "youtaite-network-api.herokuapp.com"
+    config.hosts << "localhost"
   end
 end

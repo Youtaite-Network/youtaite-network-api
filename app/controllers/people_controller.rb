@@ -1,5 +1,6 @@
 class PeopleController < ApplicationController
   before_action :set_person, only: [:show, :update, :destroy]
+  before_action :logged_in_user, only: [:create]
 
   # GET /people
   def index
@@ -13,16 +14,17 @@ class PeopleController < ApplicationController
     render json: @person
   end
 
-  # # POST /people
-  # def create
-  #   @person = Person.new(person_params)
+  # POST /people
+  def create
+    @person = Person.new(person_params)
+    @person.name, @person.thumbnail = get_person_info(person_params[:misc_id], person_params[:id_type]).values_at(:name, :thumbnail)
 
-  #   if @person.save
-  #     render json: @person, status: :created, location: @person
-  #   else
-  #     render json: @person.errors, status: :unprocessable_entity
-  #   end
-  # end
+    if @person.save
+      render json: @person, status: :created, location: @person
+    else
+      render json: @person.errors, status: :unprocessable_entity
+    end
+  end
 
   # # PATCH/PUT /people/1
   # def update
@@ -46,6 +48,6 @@ class PeopleController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def person_params
-      params.require(:person).permit(:yt_link)
+      params.require(:person).permit(:misc_id, :id_type)
     end
 end

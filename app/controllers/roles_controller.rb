@@ -1,5 +1,6 @@
 class RolesController < ApplicationController
   before_action :set_role, only: [:show, :update, :destroy]
+  before_action :logged_in_user, only: [:create, :submit]
 
   # GET /roles
   def index
@@ -13,16 +14,59 @@ class RolesController < ApplicationController
     render json: @role
   end
 
-  # # POST /roles
-  # def create
-  #   @role = Role.new(role_params)
+  # POST /roles
+  def create
+    @role = Role.new(role_params)
 
-  #   if @role.save
-  #     render json: @role, status: :created, location: @role
-  #   else
-  #     render json: @role.errors, status: :unprocessable_entity
-  #   end
-  # end
+    if @role.save
+      render json: @role, status: :created, location: @role
+    else
+      render json: @role.errors, status: :unprocessable_entity
+    end
+  end
+
+  # POST /roles/submit
+  def submit
+    # find collab
+    yt_id = params['yt_id']
+    collab = Collab.find_by(yt_id: yt_id)
+    if collab.nil? # create new collab
+      info = get_collab_info yt_id
+      collab = Collab.create({
+        yt_id: yt_id,
+        title: info[:title],
+        thumbnail: info[:thumbnail],
+      })
+    end
+    # find each person
+    params['people'].each do |person_obj|
+      if person_obj['id'].nil?
+        # create new person
+        misc_id = person_obj['misc_id']
+        id_type = person_obj['id_type']
+        info = get_person_info(misc_id, id_type)
+        person = Person.create({
+          misc_id: misc_id,
+          id_type: id_type,
+          name: info[:display_name],
+          thumbnail: info[:thumbnail],
+        })
+      else
+        person = Person.find(person_obj['id'])
+      end
+      # add roles
+      person_obj['roles'].each do |role|
+        Role.create({
+          collab_id: collab.yt_id,
+          person_id: person.id,
+          google_id: session[:google_id],
+          role: role,
+        })
+      end
+    end
+    set_headers current_user
+    render json: 'Ok', status: :ok
+  end
 
   # # PATCH/PUT /roles/1
   # def update
@@ -46,6 +90,6 @@ class RolesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def role_params
-      params.require(:role).permit(:yt_link)
+      params.require(:role).permit(:role, :person_id, :collab_id)
     end
 end
