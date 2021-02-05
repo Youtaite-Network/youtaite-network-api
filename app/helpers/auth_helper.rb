@@ -10,8 +10,6 @@ module AuthHelper
     token = issue_token user
     response.set_header('Access-Token', token[:token])
     response.set_header('Access-Token-Expiry', token[:expiry])
-    Rails.logger.info token[:token]
-    Rails.logger.info response['Access-Token']
   end
 
   private
