@@ -62,6 +62,7 @@ class CollabsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def collab_params
+      Rails.logger.info params
       params.require(:collab).permit(:yt_id)
     end
 end

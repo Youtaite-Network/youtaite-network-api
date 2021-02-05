@@ -19,7 +19,6 @@ module AuthHelper
     end
 
     def decoded_token
-      Rails.logger.error request.headers['Authorization']
       begin
         token = JWT.decode(request.headers['Authorization'][7..], jwt_key, true, { :algorithm => 'HS256' })
         if DateTime.parse(token[0]['expiry']).past?
@@ -29,7 +28,6 @@ module AuthHelper
           token
         end
       rescue JWT::DecodeError => error
-        Rails.logger.error "Token is invalid: #{error}"
         return [{}]
       end
     end
