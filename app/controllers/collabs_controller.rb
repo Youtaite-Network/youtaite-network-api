@@ -21,7 +21,7 @@ class CollabsController < ApplicationController
 
   # GET /collabs/info/:yt_id
   def info
-    yt_id = collab_params[:yt_id]
+    yt_id = params[:yt_id]
     title, description = get_collab_info(yt_id).values_at(:title, :description)
     render json: {
       title: title,
@@ -62,7 +62,7 @@ class CollabsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def collab_params
-      Rails.logger.info params
+      Rails.logger.debug params
       params.require(:collab).permit(:yt_id)
     end
 end
