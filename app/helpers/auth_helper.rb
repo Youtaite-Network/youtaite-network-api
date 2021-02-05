@@ -8,6 +8,7 @@ module AuthHelper
 
   def set_headers user
     token = issue_token user
+    Rails.logger.info token
     response.set_header('Access-Token', token[:token])
     response.set_header('Access-Token-Expiry', token[:expiry])
   end
