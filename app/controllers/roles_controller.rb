@@ -59,7 +59,7 @@ class RolesController < ApplicationController
         Role.create({
           collab_id: collab.yt_id,
           person_id: person.id,
-          google_id: session[:google_id],
+          user_id: current_user.id,
           role: role,
         })
       end
