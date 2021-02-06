@@ -41,6 +41,7 @@ class PeopleController < ApplicationController
     channel_url = params[:channel_url]
     if not (channel_url.start_with? 'http')
       channel_url = "https://#{channel_url}"
+    end
     channel_path = URI(channel_url).path
 
     # /channel/id
