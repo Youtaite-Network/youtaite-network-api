@@ -1,10 +1,11 @@
 module AuthHelper
 
   def logged_in_user
-    unless logged_in?
+    if logged_in?
+      set_headers current_user
+    else
       render json: {message: 'Not logged in'}, status: :forbidden
     end
-    set_headers current_user
   end
 
   def set_headers user
