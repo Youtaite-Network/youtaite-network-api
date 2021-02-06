@@ -69,11 +69,13 @@ class PeopleController < ApplicationController
       end
       url = 'https://youtube.googleapis.com/youtube/v3/search?q=' + search_string + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
       response = HTTParty.get(url).parsed_response
-      output = response['items'].map({|item| {
-        yt_id: item['snippet']['channelId'],
-        name: item['snippet']['title'],
-        thumbnail: item['snippet']['thumbnails']['default']['url'],
-      }})
+      output = response['items'].map do |item| 
+        {
+          yt_id: item['snippet']['channelId'],
+          name: item['snippet']['title'],
+          thumbnail: item['snippet']['thumbnails']['default']['url'],
+        }
+      end
     end
 
     render json: output, status: :ok
