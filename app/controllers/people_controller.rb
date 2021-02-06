@@ -42,7 +42,6 @@ class PeopleController < ApplicationController
 
     # /channel/id
     if channel_path.include? '/channel/'
-      display_name, thumbnail
       yt_id = channel_path.split('/')[1]
       display_name, thumbnail = get_person_info(yt_id, 'yt').valuesAt(:name, :thumbnail)
       output = [{
