@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
   before_action :set_person, only: [:show, :update, :destroy]
-  before_action :logged_in_user, only: [:create, :info, :get_id]
+  before_action :logged_in_user, only: [:create, :info, :info_from_url]
 
   # GET /people
   def index
@@ -36,8 +36,8 @@ class PeopleController < ApplicationController
     }, status: :ok
   end
 
-  # GET /people/get_id/:channel_url
-  def get_id
+  # GET /people/info_from_url/:channel_url
+  def info_from_url
     channel_path = URI(params[:channel_url]).path
 
     # /channel/id
