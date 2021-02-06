@@ -39,11 +39,19 @@ class RolesController < ApplicationController
       })
       if !collab.save
         Rails.logger.error collab.errors.full_messages
+        render json: collab.errors.messages, status: :bad_request
+        return
       end
     end
     # find each person
     params['people'].each do |person_obj|
-      if person_obj['id'].nil?
+      # try to find using :id
+      person = Person.find_by(id: person_obj['id'])
+      if person.nil?
+        # try to find through misc_id
+        person = Person.find_by(misc_id: person_obj['misc_id'])
+      end
+      if person.nil?
         # create new person
         misc_id = person_obj['misc_id']
         id_type = person_obj['id_type']
@@ -56,9 +64,9 @@ class RolesController < ApplicationController
         })
         if !person.save
           Rails.logger.error person.errors.full_messages
+          render json: person.errors.messages, status: :bad_request
+          return
         end
-      else
-        person = Person.find(person_obj['id'])
       end
       # add roles
       person_obj['roles'].each do |role_name|
@@ -70,6 +78,8 @@ class RolesController < ApplicationController
         })
         if !role.save
           Rails.logger.error role.errors.full_messages
+          render json: role.errors.messages, status: :bad_request
+          return
         end
       end
     end
