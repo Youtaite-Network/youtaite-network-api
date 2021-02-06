@@ -49,6 +49,7 @@ class PeopleController < ApplicationController
       misc_id = channel_path.split('/')[2]
       display_name, thumbnail = get_person_info(yt_id, 'yt').valuesAt(:name, :thumbnail)
       output = [{
+        id_type: 'yt',
         misc_id: misc_id,
         name: display_name,
         thumbnail: thumbnail,
@@ -59,6 +60,7 @@ class PeopleController < ApplicationController
       url = 'https://youtube.googleapis.com/youtube/v3/channels?forUsername=' + username + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
       response = HTTParty.get(url).parsed_response
       output = [{
+        id_type: 'yt',
         misc_id: response['items'][0]['id'],
         name: response['items'][0]['snippet']['title'],
         thumbnail: response['items'][0]['snippet']['thumbnails']['default']['url'],
@@ -74,6 +76,7 @@ class PeopleController < ApplicationController
       response = HTTParty.get(url).parsed_response
       output = response['items'].map do |item| 
         {
+          id_type: 'yt',
           misc_id: item['snippet']['channelId'],
           name: item['snippet']['title'],
           thumbnail: item['snippet']['thumbnails']['default']['url'],
