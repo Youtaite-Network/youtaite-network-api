@@ -56,7 +56,7 @@ class PeopleController < ApplicationController
     # /user/username
     elsif channel_path.include? '/user/'
       username = channel_path.split('/')[2]
-      url = 'https://youtube.googleapis.com/youtube/v3/channels?forUsername=' + username + '&key=' + ENV['GOOGLE_API_KEY'] + '&type=channel&part=snippet'
+      url = 'https://youtube.googleapis.com/youtube/v3/channels?forUsername=' + username + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
       response = HTTParty.get(url).parsed_response
       output = [{
         yt_id: response['items'][0]['id'],
@@ -70,7 +70,7 @@ class PeopleController < ApplicationController
       else
         search_string = channel_path.split('/')[1]
       end
-      url = 'https://youtube.googleapis.com/youtube/v3/search?q=' + search_string + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
+      url = 'https://youtube.googleapis.com/youtube/v3/search?q=' + search_string + '&key=' + ENV['GOOGLE_API_KEY'] + '&type=channel&part=snippet'
       response = HTTParty.get(url).parsed_response
       output = response['items'].map do |item| 
         {
