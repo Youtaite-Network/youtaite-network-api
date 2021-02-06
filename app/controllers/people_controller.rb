@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
   before_action :set_person, only: [:show, :update, :destroy]
-  before_action :logged_in_user, only: [:create]
+  before_action :logged_in_user, only: [:create, :info, :get_id]
 
   # GET /people
   def index
@@ -24,6 +24,48 @@ class PeopleController < ApplicationController
     else
       render json: @person.errors, status: :unprocessable_entity
     end
+  end
+
+  # GET /people/info/:yt_id
+  def info
+    yt_id = params[:yt_id]
+    display_name, thumbnail = get_person_info(yt_id, 'yt').valuesAt(:name, :thumbnail)
+    render json: {
+      name: display_name,
+      thumbnail: thumbnail,
+    }, status: :ok
+  end
+
+  # GET /people/get_id/:channel_url
+  def get_id
+    channel_path = URI(params[:channel_url]).path
+
+    # /channel/id
+    if channel_path.include? '/channel/'
+      output = [{ yt_id: channel_path.split('/')[1] }]
+    # /user/username
+    elsif channel_path.include? '/user/'
+      username = channel_path.split('/')[1]
+      url = 'https://youtube.googleapis.com/youtube/v3/channels?forUsername=' + username + '&key=' + ENV['GOOGLE_API_KEY'] + '&type=channel&part=snippet'
+      response = HTTParty.get(url).parsed_response
+      output = [{ yt_id: response['items'][0]['id'] }]
+    # /c/search_string or /search_string
+    else
+      if channel_path.include? '/c/'
+        search_string = channel_path.path.split('/')[1]
+      else
+        search_string = channel_path.path.split('/')[0]
+      end
+      url = 'https://youtube.googleapis.com/youtube/v3/search?q=' + search_string + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
+      response = HTTParty.get(url).parsed_response
+      output = response['items'].map({|item| {
+        yt_id: item['snippet']['channelId'],
+        name: item['snippet']['title'],
+        thumbnail: item['snippet']['thumbnails']['default'],
+      }})
+    end
+
+    render json: output, status: :ok
   end
 
   # # PATCH/PUT /people/1

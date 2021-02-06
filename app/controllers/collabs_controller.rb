@@ -22,12 +22,13 @@ class CollabsController < ApplicationController
   # GET /collabs/info/:yt_id
   def info
     yt_id = params[:yt_id]
-    title, description = get_collab_info(yt_id).values_at(:title, :description)
+    title, description, channel_id = get_collab_info(yt_id).values_at(:title, :description, :channel_id)
     set_headers current_user
     render json: {
       title: title,
-      description: description
-    }
+      description: description,
+      channel_id: channel_id,
+    }, status: :ok
   end
 
   # POST /collabs

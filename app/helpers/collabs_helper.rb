@@ -5,7 +5,8 @@ module CollabsHelper
     return {
       title: response['items'][0]['snippet']['title'],
       thumbnail: response['items'][0]['snippet']['thumbnails']['medium']['url'],
-      description: response['items'][0]['snippet']['description']
+      description: response['items'][0]['snippet']['description'],
+      channel_id: response['items'][0]['snippet']['channelId'],
     }
   end
 end
