@@ -4,6 +4,7 @@ module AuthHelper
     unless logged_in?
       render json: {message: 'Not logged in'}, status: :forbidden
     end
+    set_headers current_user
   end
 
   def set_headers user

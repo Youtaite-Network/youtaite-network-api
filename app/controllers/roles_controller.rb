@@ -83,7 +83,6 @@ class RolesController < ApplicationController
         end
       end
     end
-    set_headers current_user
     render json: 'Ok', status: :ok
   end
 

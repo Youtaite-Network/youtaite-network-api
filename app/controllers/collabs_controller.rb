@@ -23,7 +23,6 @@ class CollabsController < ApplicationController
   def info
     yt_id = params[:yt_id]
     title, description, channel_id = get_collab_info(yt_id).values_at(:title, :description, :channel_id)
-    set_headers current_user
     render json: {
       title: title,
       description: description,
