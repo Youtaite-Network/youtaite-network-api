@@ -38,7 +38,10 @@ class PeopleController < ApplicationController
 
   # GET /people/info_from_url/:channel_url
   def info_from_url
-    channel_path = URI(params[:channel_url]).path
+    channel_url = params[:channel_url]
+    if not (channel_url.start_with? 'http')
+      channel_url = "https://#{channel_url}"
+    channel_path = URI(channel_url).path
 
     # /channel/id
     if channel_path.include? '/channel/'
@@ -62,9 +65,9 @@ class PeopleController < ApplicationController
     # /c/search_string or /search_string
     else
       if channel_path.include? '/c/'
-        search_string = channel_path.path.split('/')[1]
+        search_string = channel_path.split('/')[1]
       else
-        search_string = channel_path.path.split('/')[0]
+        search_string = channel_path.split('/')[0]
       end
       url = 'https://youtube.googleapis.com/youtube/v3/search?q=' + search_string + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
       response = HTTParty.get(url).parsed_response
