@@ -33,6 +33,8 @@ class PeopleController < ApplicationController
     render json: {
       name: display_name,
       thumbnail: thumbnail,
+      misc_id: yt_id,
+      id_type: :yt,
     }, status: :ok
   end
 

@@ -53,14 +53,12 @@ class RolesController < ApplicationController
       end
       if person.nil?
         # create new person
-        misc_id = person_obj['misc_id']
-        id_type = person_obj['id_type']
-        info = get_person_info(misc_id, id_type)
+        display_name, misc_id, id_type, thumbnail = person_obj.values_at('name', 'misc_id', 'id_type', 'thumbnail')
         person = Person.new({
+          name: display_name,
           misc_id: misc_id,
           id_type: id_type,
-          name: info[:display_name],
-          thumbnail: info[:thumbnail],
+          thumbnail: thumbnail,
         })
         if !person.save
           Rails.logger.error person.errors.full_messages
