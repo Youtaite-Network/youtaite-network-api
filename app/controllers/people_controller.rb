@@ -48,23 +48,23 @@ class PeopleController < ApplicationController
     if channel_path.include? '/channel/'
       misc_id = channel_path.split('/')[2]
       display_name, thumbnail = get_person_info(misc_id, 'yt').values_at(:name, :thumbnail)
-      output = [{
+      output = {
         id_type: 'yt',
         misc_id: misc_id,
         name: display_name,
         thumbnail: thumbnail,
-      }]
+      }
     # /user/username
     elsif channel_path.include? '/user/'
       username = channel_path.split('/')[2]
       url = 'https://youtube.googleapis.com/youtube/v3/channels?forUsername=' + username + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
       response = HTTParty.get(url).parsed_response
-      output = [{
+      output = {
         id_type: 'yt',
         misc_id: response['items'][0]['id'],
         name: response['items'][0]['snippet']['title'],
         thumbnail: response['items'][0]['snippet']['thumbnails']['default']['url'],
-      }]
+      }
     # /c/search_string or /search_string
     else
       if channel_path.include? '/c/'
@@ -109,6 +109,6 @@ class PeopleController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def person_params
-      params.require(:person).permit(:misc_id, :id_type)
+      params.require(:person).permit(:misc_id, :id_type, :name, :thumbnail)
     end
 end
