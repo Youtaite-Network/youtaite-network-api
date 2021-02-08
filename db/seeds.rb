@@ -13,11 +13,14 @@ collabs.each do |row|
     next
   end
   info = get_collab_info row[0]
-  Collab.create({
+  c = Collab.new({
     yt_id: row[0],
     title: info[:title],
     thumbnail: info[:thumbnail]
   })
+  if !c.save
+    Rails.logger.error "Could not save collab #{row[0]}: #{c.errors.full_messages}"
+  end
 end
 
 # people = CSV.new(File.open('db/people.csv'))
