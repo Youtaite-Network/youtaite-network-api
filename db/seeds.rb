@@ -13,6 +13,9 @@ collabs.each do |row|
     next
   end
   info = get_collab_info row[0]
+  if info.nil? # video could be private
+    next
+  end
   c = Collab.new({
     yt_id: row[0],
     title: info[:title],
