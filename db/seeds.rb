@@ -2,10 +2,10 @@ include CollabsHelper
 include UsersHelper
 include PeopleHelper
 
-Role.delete_all
-Collab.delete_all
-Person.delete_all
-User.delete_all
+# Role.delete_all
+# Collab.delete_all
+# Person.delete_all
+# User.delete_all
 
 collabs = CSV.new(File.open('db/collabs.csv'))
 collabs.each do |row|
@@ -20,50 +20,50 @@ collabs.each do |row|
   })
 end
 
-people = CSV.new(File.open('db/people.csv'))
-people.each do |row|
-  if row.empty?
-    next
-  end
-  misc_id = row[0]
-  if row.length == 2 # twitter/misc link
-    id_type = row[1]
-  elsif row[0].include? '[' # no link
-    id_type = 'no_link'
-  else # yt link
-    id_type = 'yt'
-  end
-  display_name, thumbnail = get_person_info(misc_id, id_type).values_at(:name, :thumbnail)
-  Person.create({
-    misc_id: misc_id,
-    id_type: id_type,
-    name: display_name,
-    thumbnail: thumbnail,
-  })
-end
+# people = CSV.new(File.open('db/people.csv'))
+# people.each do |row|
+#   if row.empty?
+#     next
+#   end
+#   misc_id = row[0]
+#   if row.length == 2 # twitter/misc link
+#     id_type = row[1]
+#   elsif row[0].include? '[' # no link
+#     id_type = 'no_link'
+#   else # yt link
+#     id_type = 'yt'
+#   end
+#   display_name, thumbnail = get_person_info(misc_id, id_type).values_at(:name, :thumbnail)
+#   Person.create({
+#     misc_id: misc_id,
+#     id_type: id_type,
+#     name: display_name,
+#     thumbnail: thumbnail,
+#   })
+# end
 
-User.create({
-  google_id: 'initial',
-})
+# User.create({
+#   google_id: 'initial',
+# })
 
-roles = CSV.new(File.open('db/roles.csv'))
-roles.each do |row|
-  if row.empty?
-    next
-  end
-  collab_id = Collab.find_by(yt_id: row[0]).id
-  person_id = Person.find_by(misc_id: row[1]).id
-  user_id = User.find_by(google_id: 'initial').id
-  role = row[2]
-  r = Role.new({
-    collab_id: collab_id,
-    person_id: person_id,
-    user_id: user_id,
-    role: role,
-  })
-  r.save
-  puts r.errors.full_messages
-end
+# roles = CSV.new(File.open('db/roles.csv'))
+# roles.each do |row|
+#   if row.empty?
+#     next
+#   end
+#   collab_id = Collab.find_by(yt_id: row[0]).id
+#   person_id = Person.find_by(misc_id: row[1]).id
+#   user_id = User.find_by(google_id: 'initial').id
+#   role = row[2]
+#   r = Role.new({
+#     collab_id: collab_id,
+#     person_id: person_id,
+#     user_id: user_id,
+#     role: role,
+#   })
+#   r.save
+#   puts r.errors.full_messages
+# end
 
 # REFORMAT PEOPLE.CSV
 # contents = ''
