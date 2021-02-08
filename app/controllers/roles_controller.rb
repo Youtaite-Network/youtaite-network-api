@@ -67,7 +67,7 @@ class RolesController < ApplicationController
         end
       end
       # add roles
-      person_obj['roles'].each do |role_name|
+      (person_obj['roles'] || []).each do |role_name|
         role = Role.new({
           collab_id: collab.id,
           person_id: person.id,
