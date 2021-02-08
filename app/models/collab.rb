@@ -1,6 +1,7 @@
 class Collab < ApplicationRecord
   has_many :roles
   has_many :people, through: :roles
+  validates :yt_id, :presence => true, :uniqueness => true
 
   def self.edges
     people = Person.includes(:collabs)
