@@ -39,12 +39,7 @@ class PeopleController < ApplicationController
       render json: 'Error getting person info', status: :unprocessable_entity
       return
     end
-    render json: {
-      name: info[:display_name],
-      thumbnail: info[:thumbnail],
-      misc_id: yt_id,
-      id_type: :yt,
-    }, status: :ok
+    render json: info, status: :ok
   end
 
   # GET /people/info_from_url/:channel_url
