@@ -1,5 +1,7 @@
 module PeopleHelper
   def get_person_info misc_id, id_type
+    person = Person.find_by(misc_id: misc_id)
+    return person if person
     thumbnail = '#'
     if id_type == 'yt'
       url = 'https://youtube.googleapis.com/youtube/v3/channels?id=' + misc_id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'

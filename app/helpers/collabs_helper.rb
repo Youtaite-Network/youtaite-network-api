@@ -1,5 +1,7 @@
 module CollabsHelper
   def get_collab_info yt_id
+    collab = Collab.find_by(yt_id: yt_id)
+    return collab if collab
     url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + yt_id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
     return if has_error(response, yt_id)
