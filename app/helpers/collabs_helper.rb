@@ -3,6 +3,7 @@ module CollabsHelper
     Rails.logger.info "Getting collab info for: #{yt_id}"
     url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + yt_id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
+    Rails.logger.info "Response for #{yt_id}: #{response}"
     if response['items'].empty? # video could be private
       return
     end
