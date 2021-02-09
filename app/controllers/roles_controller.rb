@@ -29,13 +29,32 @@ class RolesController < ApplicationController
   def submit
     # find collab
     yt_id = params['yt_id']
+    # find or create collab
     collab = Collab.find_by(yt_id: yt_id)
-    if collab.nil? # create new collab
+    if collab.nil?
       info = get_collab_info yt_id
+      # find or create person who uploaded collab
+      person_misc_id = info[:channel_id]
+      person = Person.find_by(misc_id: person_misc_id)
+      if !person
+        person_info = get_person_info person_misc_id, 'yt'
+        person = Person.new({
+          misc_id: person_misc_id,
+          id_type: 'yt',
+          name: person_info[:name],
+          thumbnail: person_info[:thumbnail],
+        })
+        if !person.save
+          Rails.logger.error person.errors.full_messages
+          render json: person.errors.messages, status: :bad_request
+        end
+      end
+      # create collab
       collab = Collab.new({
         yt_id: yt_id,
         title: info[:title],
         thumbnail: info[:thumbnail],
+        person_id: person.id,
       })
       if !collab.save
         Rails.logger.error collab.errors.full_messages

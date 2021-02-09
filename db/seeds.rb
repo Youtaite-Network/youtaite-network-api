@@ -7,24 +7,24 @@ include PeopleHelper
 # Person.delete_all
 # User.delete_all
 
-collabs = CSV.new(File.open('db/collabs.csv'))
-collabs.each do |row|
-  if row.empty? or Collab.find_by(yt_id: row[0])
-    next
-  end
-  info = get_collab_info row[0]
-  if info.nil? # video could be private
-    next
-  end
-  c = Collab.new({
-    yt_id: row[0],
-    title: info[:title],
-    thumbnail: info[:thumbnail]
-  })
-  if !c.save
-    Rails.logger.error "Could not save collab #{row[0]}: #{c.errors.full_messages}"
-  end
-end
+# collabs = CSV.new(File.open('db/collabs.csv'))
+# collabs.each do |row|
+#   if row.empty? or Collab.find_by(yt_id: row[0])
+#     next
+#   end
+#   info = get_collab_info row[0]
+#   if info.nil? # video could be private
+#     next
+#   end
+#   c = Collab.new({
+#     yt_id: row[0],
+#     title: info[:title],
+#     thumbnail: info[:thumbnail]
+#   })
+#   if !c.save
+#     Rails.logger.error "Could not save collab #{row[0]}: #{c.errors.full_messages}"
+#   end
+# end
 
 # people = CSV.new(File.open('db/people.csv'))
 # people.each do |row|
@@ -88,3 +88,25 @@ end
 #   contents += "\n"
 # end
 # File.open('db/people.csv', 'w'){ |f| f.write contents }
+
+# GENERATE PERSON_ID FOR COLLABS
+Collab.all.each do |collab|
+  person_misc_id = get_collab_info(collab.yt_id)[:channel_id]
+  person = Person.find_by(misc_id: person_misc_id)
+  if !person
+    person_info = get_person_info person_misc_id, 'yt'
+    person = Person.new({
+      misc_id: person_misc_id,
+      id_type: 'yt',
+      name: person_info[:name],
+      thumbnail: person_info[:thumbnail],
+    })
+    if !person.save
+      Rails.logger.error "Could not save person #{person_misc_id}: #{person.erros.full_messages}"
+    end
+  end
+  collab.person_id = person.id
+  if !collab.save
+    Rails.logger.error "Could not save collab #{collab.yt_id}: #{collab.errors.full_messages}"
+  end
+end
