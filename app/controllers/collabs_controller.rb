@@ -1,6 +1,6 @@
 class CollabsController < ApplicationController
   before_action :set_collab, only: [:show, :update, :destroy]
-  before_action :logged_in_user, only: [:info, :create]
+  before_action :logged_in_user, only: [:info, :create, :new_random]
 
   # GET /collabs
   def index
@@ -14,10 +14,10 @@ class CollabsController < ApplicationController
     render json: edges.map{|elt| {source: elt[0], target: elt[1]}}
   end
 
-  # GET /collabs/1
-  def show
-    render json: @collab
-  end
+  # # GET /collabs/1
+  # def show
+  #   render json: @collab
+  # end
 
   # GET /collabs/info/:yt_id
   def info
@@ -38,6 +38,16 @@ class CollabsController < ApplicationController
       render json: @collab, status: :created, location: @collab
     else
       render json: @collab.errors, status: :unprocessable_entity
+    end
+  end
+
+  # GET /collabs/new_random
+  def new_random
+    collab = Collab.where.not(id: Role.pluck(:collab_id)).order('RANDOM()').first
+    if collab
+      render json: collab, status: :ok
+    else
+      render json: 'No not-yet-analyzed collabs were found', status: :bad_request
     end
   end
 
