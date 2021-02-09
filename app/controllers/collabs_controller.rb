@@ -27,12 +27,7 @@ class CollabsController < ApplicationController
       render json: 'Error getting collab info', status: :unprocessable_entity
       return
     end
-    render json: {
-      yt_id: yt_id,
-      title: info[:title],
-      description: info[:description],
-      channel_id: info[:channel_id],
-    }, status: :ok
+    render json: info, status: :ok
   end
 
   # POST /collabs
@@ -54,10 +49,14 @@ class CollabsController < ApplicationController
   # GET /collabs/new_random
   def new_random
     collab = Collab.where.not(id: Role.pluck(:collab_id)).order('RANDOM()').first
-    if collab
-      render json: collab, status: :ok
-    else
+    if !collab
       render json: 'No not-yet-analyzed collabs were found', status: :bad_request
+    else
+      info = get_collab_info(collab.yt_id)
+      if !info
+        render json: 'Error getting collab info', status: :unprocessable_entity
+      end
+      render json: info, status: :ok
     end
   end
 

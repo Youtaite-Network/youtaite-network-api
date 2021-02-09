@@ -4,6 +4,7 @@ module CollabsHelper
     response = HTTParty.get(url).parsed_response
     return if has_error(response, yt_id)
     return {
+      yt_id: yt_id,
       title: response['items'][0]['snippet']['title'],
       thumbnail: response['items'][0]['snippet']['thumbnails']['medium']['url'],
       description: response['items'][0]['snippet']['description'],
