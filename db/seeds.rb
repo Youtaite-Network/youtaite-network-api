@@ -2,29 +2,11 @@ include CollabsHelper
 include UsersHelper
 include PeopleHelper
 
+# # INITIAL SETUP
 # Role.delete_all
-# Collab.delete_all
 # Person.delete_all
+# Collab.delete_all
 # User.delete_all
-
-# collabs = CSV.new(File.open('db/collabs.csv'))
-# collabs.each do |row|
-#   if row.empty? or Collab.find_by(yt_id: row[0])
-#     next
-#   end
-#   info = get_collab_info row[0]
-#   if info.nil? # video could be private
-#     next
-#   end
-#   c = Collab.new({
-#     yt_id: row[0],
-#     title: info[:title],
-#     thumbnail: info[:thumbnail]
-#   })
-#   if !c.save
-#     Rails.logger.error "Could not save collab #{row[0]}: #{c.errors.full_messages}"
-#   end
-# end
 
 # people = CSV.new(File.open('db/people.csv'))
 # people.each do |row|
@@ -46,6 +28,41 @@ include PeopleHelper
 #     name: display_name,
 #     thumbnail: thumbnail,
 #   })
+# end
+
+# collabs = CSV.new(File.open('db/collabs.csv'))
+# collabs.each do |row|
+#   if row.empty? or Collab.find_by(yt_id: row[0])
+#     next
+#   end
+#   info = get_collab_info row[0]
+#   if info.nil? # video could be private
+#     next
+#   end
+#   person_misc_id = info[:channel_id]
+#   person = Person.find_by(misc_id: person_misc_id)
+#   if !person
+#     person_info = get_person_info person_misc_id, 'yt'
+#     person = Person.new({
+#       misc_id: person_misc_id,
+#       id_type: 'yt',
+#       name: person_info[:name],
+#       thumbnail: person_info[:thumbnail],
+#     })
+#     if !person.save
+#       Rails.logger.error "Could not save person #{person_misc_id}: #{person.errors.full_messages}"
+#       next
+#     end
+#   end
+#   c = Collab.new({
+#     yt_id: row[0],
+#     title: info[:title],
+#     thumbnail: info[:thumbnail],
+#     person_id: person.id,
+#   })
+#   if !c.save
+#     Rails.logger.error "Could not save collab #{row[0]}: #{c.errors.full_messages}"
+#   end
 # end
 
 # User.create({

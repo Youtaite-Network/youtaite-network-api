@@ -1,5 +1,6 @@
 module CollabsHelper
   def get_collab_info yt_id
+    Rails.logger.info "Getting collab info for: #{yt_id}"
     url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + yt_id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
     if response['items'].empty? # video could be private

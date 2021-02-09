@@ -5,10 +5,9 @@ class Collab < ApplicationRecord
   validates :yt_id, :presence => true, :uniqueness => true
 
   def self.edges
-    people = Person.includes(:collabs)
     edges = []
-    people.each do |p|
-      edges += p.collabs.pluck(:id).combination(2).to_a
+    Role.all.group_by(&:person_id).each do |person_id, roles|
+      edges += roles.map{|role| role.collab_id}.uniq.combination(2).to_a
     end
     edges.uniq
   end
