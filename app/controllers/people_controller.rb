@@ -49,24 +49,11 @@ class PeopleController < ApplicationController
     # /channel/id
     if channel_path.include? '/channel/'
       misc_id = channel_path.split('/')[2]
-      display_name, thumbnail = get_person_info(misc_id, 'yt').values_at(:name, :thumbnail)
-      output = {
-        id_type: 'yt',
-        misc_id: misc_id,
-        name: display_name,
-        thumbnail: thumbnail,
-      }
+      output = get_person_info(misc_id, 'yt').values_at(:name, :thumbnail)
     # /user/username
     elsif channel_path.include? '/user/'
       username = channel_path.split('/')[2]
-      url = 'https://youtube.googleapis.com/youtube/v3/channels?forUsername=' + username + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
-      response = HTTParty.get(url).parsed_response
-      output = {
-        id_type: 'yt',
-        misc_id: response['items'][0]['id'],
-        name: response['items'][0]['snippet']['title'],
-        thumbnail: response['items'][0]['snippet']['thumbnails']['default']['url'],
-      }
+      output = get_person_info_from_username(username).values_at(:misc_id, :name, :thumbnail)
     # /c/search_string or /search_string
     else
       if channel_path.include? '/c/'
@@ -74,16 +61,7 @@ class PeopleController < ApplicationController
       else
         search_string = channel_path.split('/')[1]
       end
-      url = 'https://youtube.googleapis.com/youtube/v3/search?q=' + search_string + '&key=' + ENV['GOOGLE_API_KEY'] + '&type=channel&part=snippet'
-      response = HTTParty.get(url).parsed_response
-      output = response['items'].map do |item| 
-        {
-          id_type: 'yt',
-          misc_id: item['snippet']['channelId'],
-          name: item['snippet']['title'],
-          thumbnail: item['snippet']['thumbnails']['default']['url'],
-        }
-      end
+      output = get_people_from_query search_string
     end
 
     render json: output, status: :ok
