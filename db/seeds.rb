@@ -108,6 +108,9 @@ include PeopleHelper
 
 # GENERATE PERSON_ID FOR COLLABS
 Collab.all.each do |collab|
+  if collab.person_id
+    next
+  end
   person_misc_id = get_collab_info(collab.yt_id)[:channel_id]
   person = Person.find_by(misc_id: person_misc_id)
   if !person
