@@ -53,11 +53,11 @@ class PeopleController < ApplicationController
     # /channel/id
     if channel_path.include? '/channel/'
       misc_id = channel_path.split('/')[2]
-      output = get_person_info(misc_id, 'yt').values_at(:name, :thumbnail)
+      output = get_person_info(misc_id, 'yt')
     # /user/username
     elsif channel_path.include? '/user/'
       username = channel_path.split('/')[2]
-      output = get_person_info_from_username(username).values_at(:misc_id, :name, :thumbnail)
+      output = get_person_info_from_username(username)
     # /c/search_string or /search_string
     else
       if channel_path.include? '/c/'
