@@ -17,7 +17,12 @@ class PeopleController < ApplicationController
   # POST /people
   def create
     @person = Person.new(person_params)
-    @person.name, @person.thumbnail = get_person_info(person_params[:misc_id], person_params[:id_type]).values_at(:name, :thumbnail)
+    info = get_person_info(person_params[:misc_id], person_params[:id_type])
+    if !info
+      render json: 'Error getting person info', status: :unprocessable_entity
+      return
+    end
+    @person.name, @person.thumbnail = info.values_at(:name, :thumbnail)
 
     if @person.save
       render json: @person, status: :created, location: @person
@@ -29,10 +34,14 @@ class PeopleController < ApplicationController
   # GET /people/info/:yt_id
   def info
     yt_id = params[:yt_id]
-    display_name, thumbnail = get_person_info(yt_id, 'yt').values_at(:name, :thumbnail)
+    info = get_person_info(yt_id, 'yt')
+    if !info
+      render json: 'Error getting person info', status: :unprocessable_entity
+      return
+    end
     render json: {
-      name: display_name,
-      thumbnail: thumbnail,
+      name: info[:display_name],
+      thumbnail: info[:thumbnail],
       misc_id: yt_id,
       id_type: :yt,
     }, status: :ok
@@ -64,6 +73,10 @@ class PeopleController < ApplicationController
       output = get_people_from_query search_string
     end
 
+    if !output
+      render json: 'Error getting person info', status: :unprocessable_entity
+      return
+    end
     render json: output, status: :ok
   end
 

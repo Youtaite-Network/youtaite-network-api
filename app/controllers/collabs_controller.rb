@@ -22,18 +22,28 @@ class CollabsController < ApplicationController
   # GET /collabs/info/:yt_id
   def info
     yt_id = params[:yt_id]
-    title, description, channel_id = get_collab_info(yt_id).values_at(:title, :description, :channel_id)
+    info = get_collab_info(yt_id)
+    if !info
+      render json: 'Error getting collab info', status: :unprocessable_entity
+      return
+    end
     render json: {
-      title: title,
-      description: description,
-      channel_id: channel_id,
+      yt_id: yt_id,
+      title: info[:title],
+      description: info[:description],
+      person_id: info[:person_id],
     }, status: :ok
   end
 
   # POST /collabs
   def create
     @collab = Collab.new(collab_params)
-    @collab.title, @collab.thumbnail = get_collab_info(collab_params[:yt_id]).values_at(:title, :thumbnail)
+    info = get_collab_info(collab_params[:yt_id])
+    if !info
+      render json: 'Error getting collab info', status: :unprocessable_entity
+      return
+    end
+    @collab.title, @collab.thumbnail = info.values_at(:title, :thumbnail)
     if @collab.save
       render json: @collab, status: :created, location: @collab
     else

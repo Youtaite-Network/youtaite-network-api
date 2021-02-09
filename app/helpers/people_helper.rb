@@ -49,9 +49,8 @@ module PeopleHelper
 
   private
     def has_error response, id
-      Rails.logger.info response
       if response['error']
-        Rails.logger.error "Error when getting person info for: #{id}. Error: #{response['error']}"
+        Rails.logger.error "Error when getting person info for: #{id}. #{response['error']}"
         return true
       end
       return false
