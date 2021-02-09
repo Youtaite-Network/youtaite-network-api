@@ -9,7 +9,7 @@ include PeopleHelper
 
 collabs = CSV.new(File.open('db/collabs.csv'))
 collabs.each do |row|
-  if row.empty?
+  if row.empty? or Collab.find_by(yt_id: row[0])
     next
   end
   info = get_collab_info row[0]
