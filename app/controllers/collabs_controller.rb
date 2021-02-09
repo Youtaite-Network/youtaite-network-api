@@ -55,8 +55,9 @@ class CollabsController < ApplicationController
       info = get_collab_info(collab.yt_id)
       if !info
         render json: 'Error getting collab info', status: :unprocessable_entity
+      else
+        render json: info, status: :ok
       end
-      render json: info, status: :ok
     end
   end
 
