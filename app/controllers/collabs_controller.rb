@@ -31,7 +31,7 @@ class CollabsController < ApplicationController
       yt_id: yt_id,
       title: info[:title],
       description: info[:description],
-      person_id: info[:person_id],
+      channel_id: info[:channel_id],
     }, status: :ok
   end
 
