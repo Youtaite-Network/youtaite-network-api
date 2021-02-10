@@ -134,16 +134,7 @@ include TwitterApiHelper
 
 # GENERATE PERSON INFO FOR TW PEOPLE
 Person.where(id_type: 'tw').each do |person|
-  screen_name = person.misc_id
-  if person.misc_id.include? 'twitter.com'
-    if person.misc_id.start_with? 'http'
-      screen_name = URI(person.misc_id).path[1..]
-    else
-      misc_id = "https://#{person.misc_id}"
-      screen_name = URI(misc_id).path[1..]
-    end
-  end
-  info = get_tw_person_info screen_name
+  info = get_tw_person_info person.misc_id
   if !info
     Rails.logger.error "Could not retrieve information for tw person: #{person.misc_id}."
     next
@@ -155,9 +146,3 @@ Person.where(id_type: 'tw').each do |person|
     Rails.logger.error "Could not save tw person: #{person.name}. #{person.errors.full_messages}"
   end
 end
-
-
-
-
-
-

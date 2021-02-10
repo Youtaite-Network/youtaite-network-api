@@ -1,5 +1,12 @@
 module TwitterApiHelper
-  def get_tw_person_info screen_name
+  def get_tw_person_info misc_id
+    screen_name = misc_id
+    if misc_id.include? 'twitter.com'
+      if !misc_id.start_with? 'http'
+        misc_id = "https://#{misc_id}"
+      end
+      screen_name = URI(misc_id).path.split('/')[1]
+    end
     url = "https://api.twitter.com/1.1/users/show.json?screen_name=#{screen_name}"
     headers = { 'Authorization' => "Bearer #{ENV['TWITTER_BEARER_TOKEN']}" }
     response = HTTParty.get(url, headers: headers).parsed_response
