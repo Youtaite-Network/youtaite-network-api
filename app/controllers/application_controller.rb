@@ -3,6 +3,7 @@ class ApplicationController < ActionController::API
   include UsersHelper
   include PeopleHelper
   include AuthHelper
+  include TwitterApiHelper
   include ::ActionController::Cookies
   
   def welcome

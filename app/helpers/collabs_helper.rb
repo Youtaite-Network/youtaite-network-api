@@ -15,7 +15,7 @@ module CollabsHelper
   private
     def has_error response, id
       if response['error'] # probably quota exceeded
-        Rails.logger.error "Error when getting collab info for: #{id}. #{response['error']}"
+        Rails.logger.error "Error when getting collab info for: #{id}. #{response}"
         return true
       elsif response['items'].empty? # video is private/inaccessible?
         Rails.logger.error "Error when getting collab info for: #{id}. Collab not found - is it private?"
