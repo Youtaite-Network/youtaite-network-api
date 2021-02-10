@@ -48,11 +48,11 @@ class PeopleController < ApplicationController
     if not (url.start_with? 'http')
       url = "https://#{url}"
     end
-    host = URI(url).host
+    host = URI(url).host.split('.')[-2]
 
-    if host == 'youtube.com'
+    if host == 'youtube'
       output = get_yt_person_info_from_url url
-    elsif host == 'twitter.com'
+    elsif host == 'twitter'
       output = get_tw_person_info_from_url url
     else
       render json: 'Host not recognized', status: :bad_request
