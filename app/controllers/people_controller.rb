@@ -50,9 +50,9 @@ class PeopleController < ApplicationController
     end
     host = URI(url).host
 
-    if host === 'youtube.com'
+    if host == 'youtube.com'
       output = get_yt_person_info_from_url url
-    elsif host === 'twitter.com'
+    elsif host == 'twitter.com'
       output = get_tw_person_info_from_url url
     else
       render json: 'Host not recognized', status: :bad_request
@@ -63,7 +63,7 @@ class PeopleController < ApplicationController
       render json: 'Error getting person info', status: :unprocessable_entity
       return
     end
-    
+
     render json: output, status: :ok
   end
 
