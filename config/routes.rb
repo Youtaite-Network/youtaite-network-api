@@ -6,8 +6,7 @@ Rails.application.routes.draw do
   get '/collabs/info/:yt_id', to: 'collabs#info'
   get '/collabs/new_random', to: 'collabs#new_random'
   get '/people/info/:yt_id', to: 'people#info'
-  get 'people/info_from_url/*channel_url', to: 'people#info_from_url'
-  get 'people/info_from_tw_url/*tw_url', to: 'people#info_from_tw_url'
+  get 'people/info_from_url/*url', to: 'people#info_from_url'
   post '/googlesignin', to: 'users#signin'
   post '/submit', to: 'roles#submit'
 end

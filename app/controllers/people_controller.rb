@@ -42,46 +42,28 @@ class PeopleController < ApplicationController
     render json: info, status: :ok
   end
 
-  # GET /people/info_from_url/:channel_url
+  # GET /people/info_from_url/:url
   def info_from_url
-    channel_url = params[:channel_url]
-    if not (channel_url.start_with? 'http')
-      channel_url = "https://#{channel_url}"
+    url = params[:url]
+    if not (url.start_with? 'http')
+      url = "https://#{url}"
     end
-    channel_path = URI(channel_url).path
+    host = URI(url).host
 
-    # /channel/id
-    if channel_path.include? '/channel/'
-      misc_id = channel_path.split('/')[2]
-      output = get_yt_person_info_from_id(misc_id)
-    # /user/username
-    elsif channel_path.include? '/user/'
-      username = channel_path.split('/')[2]
-      output = get_yt_person_info_from_username(username)
-    # /c/search_string or /search_string
+    if host === 'youtube.com'
+      output = get_yt_person_info_from_url url
+    elsif host === 'twitter.com'
+      output = get_tw_person_info_from_url url
     else
-      if channel_path.include? '/c/'
-        search_string = channel_path.split('/')[2]
-      else
-        search_string = channel_path.split('/')[1]
-      end
-      output = get_yt_people_from_query search_string
+      render json: 'Host not recognized', status: :bad_request
+      return
     end
 
     if !output
       render json: 'Error getting person info', status: :unprocessable_entity
       return
     end
-    render json: output, status: :ok
-  end
-
-  def info_from_tw_url
-    tw_url = params[:tw_url]
-    output = get_tw_person_info_from_url tw_url
-    if !output
-      render json: 'Error getting person info', status: :unprocessable_entity
-      return
-    end
+    
     render json: output, status: :ok
   end
 

@@ -39,6 +39,28 @@ module YoutubeApiHelper
     end
   end
 
+  def get_yt_person_from_url url
+    channel_path = URI(url).path
+    # /channel/id
+    if channel_path.include? '/channel/'
+      misc_id = channel_path.split('/')[2]
+      output = get_yt_person_info_from_id(misc_id)
+    # /user/username
+    elsif channel_path.include? '/user/'
+      username = channel_path.split('/')[2]
+      output = get_yt_person_info_from_username(username)
+    # /c/search_string or /search_string
+    else
+      if channel_path.include? '/c/'
+        search_string = channel_path.split('/')[2]
+      else
+        search_string = channel_path.split('/')[1]
+      end
+      output = get_yt_people_from_query search_string
+    end
+    output
+  end
+
   private
     def has_error response, id
       if response['error']
