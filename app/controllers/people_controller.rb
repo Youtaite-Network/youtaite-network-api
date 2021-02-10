@@ -51,9 +51,9 @@ class PeopleController < ApplicationController
     host = URI(url).host.split('.')[-2]
 
     if host == 'youtube'
-      output = get_yt_person_info_from_url url
+      output = get_yt_person_from_url url
     elsif host == 'twitter'
-      output = get_tw_person_info_from_url url
+      output = get_tw_person_from_url url
     else
       render json: 'Host not recognized', status: :bad_request
       return

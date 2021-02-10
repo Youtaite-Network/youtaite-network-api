@@ -134,7 +134,7 @@ include TwitterApiHelper
 
 # GENERATE PERSON INFO FOR TW PEOPLE
 Person.where(id_type: 'tw').each do |person|
-  info = get_tw_person_info person.misc_id
+  info = get_tw_person_from_url person.misc_id
   if !info
     Rails.logger.error "Could not retrieve information for tw person: #{person.misc_id}."
     next

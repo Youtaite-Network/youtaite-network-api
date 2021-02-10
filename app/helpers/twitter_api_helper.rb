@@ -1,5 +1,5 @@
 module TwitterApiHelper
-  def get_tw_person_info_from_id id
+  def get_tw_person_from_id id
     url = "https://api.twitter.com/1.1/users/show.json?id=#{id}"
     headers = { 'Authorization' => "Bearer #{ENV['TWITTER_BEARER_TOKEN']}" }
     response = HTTParty.get(url, headers: headers).parsed_response
@@ -12,7 +12,7 @@ module TwitterApiHelper
     }
   end
 
-  def get_tw_person_info_from_url url
+  def get_tw_person_from_url url
     screen_name = url
     if url.include? 'twitter.com'
       if !url.start_with? 'http'

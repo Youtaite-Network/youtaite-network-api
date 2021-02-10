@@ -1,5 +1,5 @@
 module YoutubeApiHelper
-  def get_yt_person_info_from_id id
+  def get_yt_person_from_id id
     url = 'https://youtube.googleapis.com/youtube/v3/channels?id=' + id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
     return if has_error(response, id)
@@ -13,7 +13,7 @@ module YoutubeApiHelper
     }
   end
 
-  def get_yt_person_info_from_username username
+  def get_yt_person_from_username username
     url = 'https://youtube.googleapis.com/youtube/v3/channels?forUsername=' + username + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
     return if has_error(response, username)
@@ -44,11 +44,11 @@ module YoutubeApiHelper
     # /channel/id
     if channel_path.include? '/channel/'
       misc_id = channel_path.split('/')[2]
-      output = get_yt_person_info_from_id(misc_id)
+      output = get_yt_person_from_id(misc_id)
     # /user/username
     elsif channel_path.include? '/user/'
       username = channel_path.split('/')[2]
-      output = get_yt_person_info_from_username(username)
+      output = get_yt_person_from_username(username)
     # /c/search_string or /search_string
     else
       if channel_path.include? '/c/'

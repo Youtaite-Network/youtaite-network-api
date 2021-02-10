@@ -3,9 +3,9 @@ module PeopleHelper
     person = Person.find_by(misc_id: misc_id)
     return person if person
     if id_type == 'yt'
-      info = get_yt_person_info_from_id misc_id
+      info = get_yt_person_from_id misc_id
     elsif id_type == 'tw'
-      info = get_tw_person_info_from_id misc_id
+      info = get_tw_person_from_id misc_id
     else # no_link, other, ig, yt_link
       info = {
         name: misc_id,
