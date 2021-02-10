@@ -1,6 +1,6 @@
 class PeopleController < ApplicationController
   before_action :set_person, only: [:show, :update, :destroy]
-  before_action :logged_in_user, only: [:create, :info, :info_from_url]
+  before_action :logged_in_user, only: [:create, :info, :info_from_url, :info_from_tw_url]
 
   # GET /people
   def index
@@ -53,11 +53,11 @@ class PeopleController < ApplicationController
     # /channel/id
     if channel_path.include? '/channel/'
       misc_id = channel_path.split('/')[2]
-      output = get_person_info(misc_id, 'yt')
+      output = get_yt_person_info_from_id(misc_id)
     # /user/username
     elsif channel_path.include? '/user/'
       username = channel_path.split('/')[2]
-      output = get_person_info_from_username(username)
+      output = get_yt_person_info_from_username(username)
     # /c/search_string or /search_string
     else
       if channel_path.include? '/c/'
@@ -65,9 +65,19 @@ class PeopleController < ApplicationController
       else
         search_string = channel_path.split('/')[1]
       end
-      output = get_people_from_query search_string
+      output = get_yt_people_from_query search_string
     end
 
+    if !output
+      render json: 'Error getting person info', status: :unprocessable_entity
+      return
+    end
+    render json: output, status: :ok
+  end
+
+  def info_from_tw_url
+    tw_url = params[:tw_url]
+    output = get_tw_person_info_from_url tw_url
     if !output
       render json: 'Error getting person info', status: :unprocessable_entity
       return
