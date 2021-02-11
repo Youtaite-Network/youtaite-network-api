@@ -34,6 +34,7 @@ module TwitterApiHelper
 
   private
     def has_error response, id
+      Rails.logger.error "#{response}"
       if response['errors']
         Rails.logger.error "Error when getting TW person info for: #{id}. #{response}"
         return true
