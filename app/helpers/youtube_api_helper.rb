@@ -1,8 +1,9 @@
 module YoutubeApiHelper
+  class 
   def get_yt_person_from_id id
     url = 'https://youtube.googleapis.com/youtube/v3/channels?id=' + id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
-    return if has_error(response, id)
+    return if has_yt_error(response, id)
     display_name = response['items'][0]['snippet']['title']
     thumbnail = response['items'][0]['snippet']['thumbnails']['default']['url']
     return {
@@ -16,7 +17,7 @@ module YoutubeApiHelper
   def get_yt_person_from_username username
     url = 'https://youtube.googleapis.com/youtube/v3/channels?forUsername=' + username + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
-    return if has_error(response, username)
+    return if has_yt_error(response, username)
     return {
       id_type: 'yt',
       misc_id: response['items'][0]['id'],
@@ -28,7 +29,7 @@ module YoutubeApiHelper
   def get_yt_people_from_query query
     url = 'https://youtube.googleapis.com/youtube/v3/search?q=' + query + '&key=' + ENV['GOOGLE_API_KEY'] + '&type=channel&part=snippet'
     response = HTTParty.get(url).parsed_response
-    return if has_error(response, query)
+    return if has_yt_error(response, query)
     return response['items'].map do |item| 
       {
         id_type: 'yt',
@@ -61,13 +62,27 @@ module YoutubeApiHelper
     output
   end
 
-  private
-    def has_error response, id
-      Rails.logger "youtube_api_helper: #{id}; #{response}"
-      if response['error']
-        Rails.logger.error "Error when getting YT person info for: #{id}. #{response}"
-        return true
-      end
-      return false
+  def get_collab_info
+    url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + yt_id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
+    response = HTTParty.get(url).parsed_response
+    return if has_yt_error(response, yt_id)
+    return {
+      yt_id: yt_id,
+      title: response['items'][0]['snippet']['title'],
+      thumbnail: response['items'][0]['snippet']['thumbnails']['medium']['url'],
+      description: response['items'][0]['snippet']['description'],
+      channel_id: response['items'][0]['snippet']['channelId'],
+    }
+  end
+
+  def has_yt_error response, id
+    if response['error']
+      Rails.logger.error "Error when getting YT info for: #{id}. #{response}"
+      return true
+    elsif response['items'].empty? # video is private/inaccessible?
+      Rails.logger.error "Could not find YT items matching: #{id}. Is it private?"
+      return true
     end
+    return false
+  end
 end

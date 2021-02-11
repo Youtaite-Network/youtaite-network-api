@@ -1,5 +1,4 @@
 class ApplicationController < ActionController::API
-  include CollabsHelper
   include UsersHelper
   include PeopleHelper
   include AuthHelper
