@@ -61,7 +61,7 @@ module YoutubeApiHelper
     output
   end
 
-  def get_collab_info
+  def get_collab_info yt_id
     url = 'https://youtube.googleapis.com/youtube/v3/videos?id=' + yt_id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
     return if has_yt_error(response, yt_id)
