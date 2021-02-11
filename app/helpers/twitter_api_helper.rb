@@ -24,6 +24,7 @@ module TwitterApiHelper
     headers = { 'Authorization' => "Bearer #{ENV['TWITTER_BEARER_TOKEN']}" }
     response = HTTParty.get(url, headers: headers).parsed_response
     Rails.logger.error "#{response}"
+    Rails.logger.error "#{has_error response, screen_name}"
     return if has_error(response, screen_name)
     return {
       misc_id: response['id_str'],
