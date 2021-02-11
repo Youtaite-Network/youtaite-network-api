@@ -63,6 +63,7 @@ module YoutubeApiHelper
 
   private
     def has_error response, id
+      Rails.logger "youtube_api_helper: #{id}; #{response}"
       if response['error']
         Rails.logger.error "Error when getting YT person info for: #{id}. #{response}"
         return true
