@@ -1,5 +1,4 @@
 module YoutubeApiHelper
-  class 
   def get_yt_person_from_id id
     url = 'https://youtube.googleapis.com/youtube/v3/channels?id=' + id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
