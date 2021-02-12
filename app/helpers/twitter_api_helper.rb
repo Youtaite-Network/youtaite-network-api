@@ -3,7 +3,7 @@ module TwitterApiHelper
     url = "https://api.twitter.com/1.1/users/show.json?id=#{id}"
     headers = { 'Authorization' => "Bearer #{ENV['TWITTER_BEARER_TOKEN']}" }
     response = HTTParty.get(url, headers: headers).parsed_response
-    return if has_tw_error(response, id)
+    return if tw_has_error(response, id)
     return {
       misc_id: id.to_s,
       id_type: 'tw',
@@ -23,7 +23,7 @@ module TwitterApiHelper
     url = "https://api.twitter.com/1.1/users/show.json?screen_name=#{screen_name}"
     headers = { 'Authorization' => "Bearer #{ENV['TWITTER_BEARER_TOKEN']}" }
     response = HTTParty.get(url, headers: headers).parsed_response
-    return if has_tw_error(response, screen_name)
+    return if tw_has_error(response, screen_name)
     return {
       misc_id: response['id_str'],
       id_type: 'tw',
@@ -32,7 +32,8 @@ module TwitterApiHelper
     }
   end
 
-  def has_tw_error response, id
+  # DO NOT USE OUTSIDE OF THIS MODULE
+  def tw_has_error response, id
     if response['errors']
       Rails.logger.error "Error when getting TW person info for: #{id}. #{response}"
       return true
