@@ -7,7 +7,6 @@ class ApplicationController < ActionController::API
   include ::ActionController::Cookies
   
   def welcome
-    msg = {:message => 'welcome', :status => :ok}
-    render :json => msg
+    render json: 'welcome', status: :ok
   end
 end

@@ -30,21 +30,21 @@ class CollabsController < ApplicationController
     render json: info, status: :ok
   end
 
-  # POST /collabs
-  def create
-    @collab = Collab.new(collab_params)
-    info = get_collab_info(collab_params[:yt_id])
-    if !info
-      render json: 'Error getting collab info', status: :unprocessable_entity
-      return
-    end
-    @collab.title, @collab.thumbnail = info.values_at(:title, :thumbnail)
-    if @collab.save
-      render json: @collab, status: :created, location: @collab
-    else
-      render json: @collab.errors, status: :unprocessable_entity
-    end
-  end
+  # # POST /collabs
+  # def create
+  #   @collab = Collab.new(collab_params)
+  #   info = get_collab_info(collab_params[:yt_id])
+  #   if !info
+  #     render json: 'Error getting collab info', status: :unprocessable_entity
+  #     return
+  #   end
+  #   @collab.title, @collab.thumbnail = info.values_at(:title, :thumbnail)
+  #   if @collab.save
+  #     render json: @collab, status: :created, location: @collab
+  #   else
+  #     render json: @collab.errors, status: :unprocessable_entity
+  #   end
+  # end
 
   # GET /collabs/new_random
   def new_random
@@ -70,15 +70,19 @@ class CollabsController < ApplicationController
   #   end
   # end
 
-  # # DELETE /collabs/1
-  # def destroy
-  #   @collab.destroy
-  # end
+  # DELETE /collabs/1
+  def destroy
+    if @collab.destroy
+      render json: 'Destroyed', status: :ok
+    else
+      render json: 'Not destroyed; attempt logged for further review', status: :bad_request
+    end
+  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_collab
-      @collab = Collab.find(params[:id])
+      @collab = Collab.find_by(yt_id: params[:yt_id])
     end
 
     # Only allow a trusted parameter "white list" through.

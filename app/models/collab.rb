@@ -3,6 +3,7 @@ class Collab < ApplicationRecord
   has_many :people, through: :roles
   belongs_to :person
   validates :yt_id, :presence => true, :uniqueness => true
+  before_destroy :check_roles
 
   def self.edges
     edges = []
@@ -11,4 +12,11 @@ class Collab < ApplicationRecord
     end
     edges.uniq
   end
+
+  private
+    def check_roles
+      if self.roles.any?
+        throw :abort
+      end
+    end
 end
