@@ -47,7 +47,7 @@ module YoutaiteNetworkApi
         resource '*', 
           credentials: true,
           headers: :any, 
-          methods: [:get, :post],
+          methods: [:get, :post, :delete],
           expose: ['Access-Token', 'Access-Token-Expiry']
       end
     end
