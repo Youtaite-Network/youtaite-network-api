@@ -1,6 +1,6 @@
 class CollabsController < ApplicationController
   before_action :set_collab, only: [:show, :update, :destroy]
-  before_action :logged_in_user, only: [:info, :create, :new_random]
+  before_action :logged_in_user, only: [:info, :create, :new_random, :destroy]
 
   # GET /collabs
   def index
