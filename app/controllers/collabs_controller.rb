@@ -72,10 +72,14 @@ class CollabsController < ApplicationController
 
   # DELETE /collabs/1
   def destroy
-    if @collab.destroy
-      render json: 'Destroyed', status: :ok
+    if @collab
+      if @collab.destroy
+        render json: 'Destroyed', status: :ok
+      else
+        render json: 'Not destroyed; attempt logged for further review', status: :bad_request
+      end
     else
-      render json: 'Not destroyed; attempt logged for further review', status: :bad_request
+      render json: 'Collab not found', status: :ok
     end
   end
 
