@@ -4,6 +4,7 @@ class Collab < ApplicationRecord
   belongs_to :person
   validates :yt_id, :presence => true, :uniqueness => true
   before_destroy :check_roles
+  audited
 
   def self.edges
     edges = []

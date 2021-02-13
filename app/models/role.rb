@@ -4,4 +4,5 @@ class Role < ApplicationRecord
   belongs_to :person
   belongs_to :user
   validates :collab_id, uniqueness: { scope: [:person_id, :role] }
+  audited
 end
