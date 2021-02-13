@@ -51,7 +51,7 @@ module YoutubeApiHelper
         break
       end
     end
-    return if output.nil?
+    return if id.nil?
     return get_yt_person_from_id id
   end
 
