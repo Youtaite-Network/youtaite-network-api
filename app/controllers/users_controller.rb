@@ -2,10 +2,11 @@ class UsersController < ApplicationController
   before_action :validate_id_token, only: [:signin]
 
   def signin
-    user = User.find_by(google_id: session[:google_id])
+    user = User.find_by(alt_user_id: session[:alt_user_id])
     if user.nil?
       user = User.create({
-        google_id: session[:google_id]
+        alt_user_id: session[:alt_user_id],
+        id_type: :google,
       })
     end
     set_headers user
@@ -22,8 +23,8 @@ class UsersController < ApplicationController
       validator = GoogleIDToken::Validator.new
       begin
         payload = validator.check(params[:idtoken], ENV['GOOGLE_CLIENT_ID'])
-        google_id = payload['sub']
-        session[:google_id] = google_id
+        alt_user_id = payload['sub']
+        session[:alt_user_id] = alt_user_id
         return true
       rescue GoogleIDToken::ValidationError => e
         puts "Cannot validate: #{e}"

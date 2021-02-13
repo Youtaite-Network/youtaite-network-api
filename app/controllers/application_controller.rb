@@ -5,6 +5,7 @@ class ApplicationController < ActionController::API
   include TwitterApiHelper
   include YoutubeApiHelper
   include UrlHelper
+  include AuditsHelper
   include ::ActionController::Cookies
   
   def welcome

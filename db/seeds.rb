@@ -1,7 +1,7 @@
-include CollabsHelper
-include UsersHelper
-include PeopleHelper
-include TwitterApiHelper
+# include UsersHelper
+# include PeopleHelper
+# include TwitterApiHelper
+# include YoutubeApiHelper
 
 # # INITIAL SETUP
 # Role.delete_all
@@ -67,7 +67,13 @@ include TwitterApiHelper
 # end
 
 # User.create({
-#   google_id: 'initial',
+#   alt_user_id: 'initial',
+#   id_type: 'system',
+# })
+
+# User.create({
+#   alt_user_id: 'auditor',
+#   id_type: 'system',
 # })
 
 # roles = CSV.new(File.open('db/roles.csv'))
@@ -75,9 +81,13 @@ include TwitterApiHelper
 #   if row.empty?
 #     next
 #   end
+#   collab = Collab.find_by(yt_id: row[0])
+#   if !collab
+#     next
+#   end
 #   collab_id = Collab.find_by(yt_id: row[0]).id
 #   person_id = Person.find_by(misc_id: row[1]).id
-#   user_id = User.find_by(google_id: 'initial').id
+#   user_id = User.find_by(alt_user_id: 'initial').id
 #   role = row[2]
 #   r = Role.new({
 #     collab_id: collab_id,
@@ -89,7 +99,7 @@ include TwitterApiHelper
 #   puts r.errors.full_messages
 # end
 
-# REFORMAT PEOPLE.CSV
+# # REFORMAT PEOPLE.CSV
 # contents = ''
 # people = CSV.new(File.open('db/people_withnames.csv'))
 # people.each do |row|
@@ -132,17 +142,17 @@ include TwitterApiHelper
 #   end
 # end
 
-# GENERATE PERSON INFO FOR TW PEOPLE
-Person.where(id_type: 'tw').each do |person|
-  info = get_tw_person_from_url person.misc_id
-  if !info
-    Rails.logger.error "Could not retrieve information for tw person: #{person.misc_id}."
-    next
-  end
-  person.name = info[:name]
-  person.misc_id = info[:misc_id]
-  person.thumbnail = info[:thumbnail]
-  if !person.save
-    Rails.logger.error "Could not save tw person: #{person.name}. #{person.errors.full_messages}"
-  end
-end
+# # GENERATE PERSON INFO FOR TW PEOPLE
+# Person.where(id_type: 'tw').each do |person|
+#   info = get_tw_person_from_url person.misc_id
+#   if !info
+#     Rails.logger.error "Could not retrieve information for tw person: #{person.misc_id}."
+#     next
+#   end
+#   person.name = info[:name]
+#   person.misc_id = info[:misc_id]
+#   person.thumbnail = info[:thumbnail]
+#   if !person.save
+#     Rails.logger.error "Could not save tw person: #{person.name}. #{person.errors.full_messages}"
+#   end
+# end

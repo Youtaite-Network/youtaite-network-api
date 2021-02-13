@@ -24,7 +24,7 @@ module AuthHelper
       begin
         token = JWT.decode(request.headers['Authorization'][7..], jwt_key, true, { :algorithm => 'HS256' })
         if DateTime.parse(token[0]['expiry']).past?
-          Rails.logger.error "Could not log in user #{token[0]['google_id']}: Token expired (#{token[0]['expiry']})"
+          Rails.logger.error "Could not log in user #{token[0]['alt_user_id']}: Token expired (#{token[0]['expiry']})"
           return [{}]
         else
           token
@@ -37,17 +37,17 @@ module AuthHelper
     def issue_token(user)
       expiry = 2.hours.from_now
       return {
-        token: JWT.encode({google_id: user.google_id, expiry: expiry}, jwt_key, 'HS256'),
+        token: JWT.encode({alt_user_id: user.alt_user_id, expiry: expiry}, jwt_key, 'HS256'),
         expiry: expiry,
       }
     end
 
     def current_user
-      google_id = session[:google_id]
-      if google_id.nil?
-        google_id = decoded_token[0]['google_id']
+      alt_user_id = session[:alt_user_id]
+      if alt_user_id.nil?
+        alt_user_id = decoded_token[0]['alt_user_id']
       end
-      return User.find_by(google_id: google_id)
+      return User.find_by(alt_user_id: alt_user_id)
     end
 
     def logged_in?

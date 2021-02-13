@@ -7,7 +7,7 @@ module TwitterApiHelper
     return {
       misc_id: id.to_s,
       id_type: 'tw',
-      name: "#{response['name']} (@#{screen_name})",
+      name: "#{response['name']} (@#{response['screen_name']})",
       thumbnail: response['profile_image_url_https'],
     }
   end
