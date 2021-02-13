@@ -48,10 +48,8 @@ module YoutubeApiHelper
     end
     scripts = doc.xpath('//script').collect(&:text)
     id = nil
-    Rails.logger.debug "scripts: #{scripts}"
     scripts.each do |script|
       match_data = /"key":"browse_id","value":"[\w\-_]{24}"/.match(script)
-      Rails.logger.debug "match_data: #{match_data}"
       if match_data
         id = /[\w\-_]{24}/.match(match_data[0])[0]
         break
