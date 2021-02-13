@@ -40,16 +40,20 @@ module YoutubeApiHelper
   end
 
   def get_yt_person_from_c_url c_url
+    Rails.logger.debug "Beginning web-scraping on #{c_url}"
     doc = Nokogiri::HTML(URI.open(c_url))
     scripts = doc.xpath('//script').collect(&:text)
     id = nil
+    Rails.logger.debug "scripts: #{scripts}"
     scripts.each do |script|
       match_data = /"key":"browse_id","value":"\w{24}"/.match(script)
+      Rails.logger.debug "match_data: #{match_data}"
       if match_data
         id = /"\w{24}"/.match(match_data[0])[0][1..-2]
         break
       end
     end
+    Rails.logger.debug "id: #{id}"
     return if id.nil?
     return get_yt_person_from_id id
   end
@@ -68,6 +72,13 @@ module YoutubeApiHelper
     else
       output = get_yt_person_from_c_url url
       return output if output
+      Rails.logger.debug "Web-scraping failed, using search"
+      # if web-scraping fails, use search
+      if channel_path.include? '/c/'
+        cname = channel_path.split('/')[2]
+      else
+        cname = channel_path.split('/')[1]
+      end
       return get_yt_people_from_query cname
     end
   end
