@@ -39,9 +39,8 @@ module YoutubeApiHelper
     end
   end
 
-  def get_yt_person_from_cname cname
-    url = 'https://youtube.com/lynsings'
-    doc = Nokogiri::HTML(URI.open(url))
+  def get_yt_person_from_c_url c_url
+    doc = Nokogiri::HTML(URI.open(c_url))
     scripts = doc.xpath('//script').collect(&:text)
     id = nil
     scripts.each do |script|
@@ -65,15 +64,10 @@ module YoutubeApiHelper
     elsif channel_path.include? '/user/'
       username = channel_path.split('/')[2]
       return get_yt_person_from_username(username)
-    # /c/cname or /cname
+    # /c/XXX or /XXX
     else
-      if channel_path.include? '/c/'
-        cname = channel_path.split('/')[2]
-      else
-        cname = channel_path.split('/')[1]
-      end
-      output = get_yt_person_from_cname cname
-      return if !!output
+      output = get_yt_person_from_c_url url
+      return output if output
       return get_yt_people_from_query cname
     end
   end
