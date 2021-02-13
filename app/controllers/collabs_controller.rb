@@ -24,7 +24,7 @@ class CollabsController < ApplicationController
     yt_id = params[:yt_id]
     info = get_collab_info(yt_id)
     if !info
-      render json: 'Error getting collab info', status: :unprocessable_entity
+      render json: 'Could not find collab info', status: :not_found
       return
     end
     render json: info, status: :ok

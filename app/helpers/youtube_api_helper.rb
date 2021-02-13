@@ -41,7 +41,11 @@ module YoutubeApiHelper
 
   def get_yt_person_from_c_url c_url
     Rails.logger.debug "Beginning web-scraping on #{c_url}"
-    doc = Nokogiri::HTML(URI.open(c_url))
+    begin
+      doc = Nokogiri::HTML(URI.open(c_url))
+    rescue OpenURI::HTTPError
+      return
+    end
     scripts = doc.xpath('//script').collect(&:text)
     id = nil
     Rails.logger.debug "scripts: #{scripts}"

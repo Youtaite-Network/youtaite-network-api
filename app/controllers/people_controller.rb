@@ -36,7 +36,7 @@ class PeopleController < ApplicationController
     yt_id = params[:yt_id]
     info = get_person_info(yt_id, 'yt')
     if !info
-      render json: 'Error getting person info', status: :unprocessable_entity
+      render json: 'Could not find person info', status: :not_found
       return
     end
     render json: info, status: :ok
@@ -48,6 +48,8 @@ class PeopleController < ApplicationController
     if not (url.start_with? 'http')
       url = "https://#{url}"
     end
+    url = follow_redirects url
+
     host = URI(url).host.split('.')[-2]
 
     if host == 'youtube'
@@ -60,7 +62,7 @@ class PeopleController < ApplicationController
     end
 
     if !output
-      render json: 'Error getting person info', status: :unprocessable_entity
+      render json: 'Could not find person info', status: :not_found
       return
     end
 
