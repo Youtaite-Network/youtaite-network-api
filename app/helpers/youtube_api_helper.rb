@@ -39,26 +39,43 @@ module YoutubeApiHelper
     end
   end
 
+  def get_yt_person_from_cname cname
+    url = 'https://youtube.com/lynsings'
+    doc = Nokogiri::HTML(URI.open(url))
+    scripts = doc.xpath('//script').collect(&:text)
+    id = nil
+    scripts.each do |script|
+      match_data = /"key":"browse_id","value":"\w{24}"/.match(script)
+      if match_data
+        id = /"\w{24}"/.match(match_data[0])[0][1..-2]
+        break
+      end
+    end
+    return if output.nil?
+    return get_yt_person_from_id id
+  end
+
   def get_yt_person_from_url url
     channel_path = URI(url).path
     # /channel/id
     if channel_path.include? '/channel/'
       misc_id = channel_path.split('/')[2]
-      output = get_yt_person_from_id(misc_id)
+      return get_yt_person_from_id(misc_id)
     # /user/username
     elsif channel_path.include? '/user/'
       username = channel_path.split('/')[2]
-      output = get_yt_person_from_username(username)
-    # /c/search_string or /search_string
+      return get_yt_person_from_username(username)
+    # /c/cname or /cname
     else
       if channel_path.include? '/c/'
-        search_string = channel_path.split('/')[2]
+        cname = channel_path.split('/')[2]
       else
-        search_string = channel_path.split('/')[1]
+        cname = channel_path.split('/')[1]
       end
-      output = get_yt_people_from_query search_string
+      output = get_yt_person_from_cname cname
+      return if !!output
+      return get_yt_people_from_query cname
     end
-    output
   end
 
   def get_collab_info yt_id

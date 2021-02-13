@@ -120,6 +120,7 @@ GEM
     nokogiri (1.11.1)
       mini_portile2 (~> 2.5.0)
       racc (~> 1.4)
+    open-uri (0.1.0)
     os (1.1.1)
     pg (1.2.3)
     public_suffix (4.0.6)
@@ -201,6 +202,8 @@ DEPENDENCIES
   httparty
   jwt
   listen (~> 3.2)
+  nokogiri
+  open-uri
   pg
   puma (~> 4.1)
   rack-cors
