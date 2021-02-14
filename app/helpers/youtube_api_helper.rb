@@ -2,7 +2,7 @@ module YoutubeApiHelper
   def get_yt_person_from_id id
     url = 'https://youtube.googleapis.com/youtube/v3/channels?id=' + id + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
-    return if yt_has_error(response, id)
+    return if (yt_has_error(response, id) || yt_no_results(response, id))
     display_name = response['items'][0]['snippet']['title']
     thumbnail = response['items'][0]['snippet']['thumbnails']['default']['url']
     return {
@@ -16,7 +16,7 @@ module YoutubeApiHelper
   def get_yt_person_from_username username
     url = 'https://youtube.googleapis.com/youtube/v3/channels?forUsername=' + username + '&key=' + ENV['GOOGLE_API_KEY'] + '&part=snippet'
     response = HTTParty.get(url).parsed_response
-    return if yt_has_error(response, username)
+    return if (yt_has_error(response, username) || yt_no_results(response, username))
     return {
       id_type: 'yt',
       misc_id: response['items'][0]['id'],
