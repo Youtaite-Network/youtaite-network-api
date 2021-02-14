@@ -109,7 +109,7 @@ module YoutubeApiHelper
 
   # DO NOT USE OUTSIDE OF THIS MODULE
   def yt_no_results response, id
-    if response['items'].empty?
+    if response['items'].nil? or response['items'].empty?
       Rails.logger.error "Could not find YT items matching: #{id}. Is it private?"
       return true
     end
