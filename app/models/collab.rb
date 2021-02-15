@@ -9,9 +9,18 @@ class Collab < ApplicationRecord
   def self.edges
     edges = []
     Role.all.group_by(&:person_id).each do |person_id, roles|
-      edges += roles.map{|role| role.collab_id}.uniq.combination(2).to_a
+      roles.map{|role| role.collab_id}.uniq.combination(2).to_a.each do |first, second|
+        edges += [Set[first, second]]
+      end
     end
-    edges.uniq
+    edges.uniq!.group_by do |pair|
+      edges.count(pair)
+    end.map do |strength, edges_with_strength|
+      [strength, edges_with_strength.map{ |e| 
+        e_array = e.to_a
+        {source: e_array[0], target: e_array[1]} 
+      }]
+    end.to_h
   end
 
   private
