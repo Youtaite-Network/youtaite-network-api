@@ -11,7 +11,7 @@ class CollabsController < ApplicationController
   # GET /edges
   def edges
     edges = Collab.edges
-    render json: edges.map{|elt| {source: elt[0], target: elt[1]}}
+    render json: edges, status: :ok
   end
 
   # # GET /collabs/1
