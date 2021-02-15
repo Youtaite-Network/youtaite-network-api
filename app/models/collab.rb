@@ -13,7 +13,8 @@ class Collab < ApplicationRecord
         edges += [Set[first, second]]
       end
     end
-    edges.uniq!.group_by do |pair|
+    edges_uniq = edges.uniq
+    edge_by_freq = edges_uniq.group_by do |pair|
       edges.count(pair)
     end.map do |strength, edges_with_strength|
       [strength, edges_with_strength.map{ |e| 
