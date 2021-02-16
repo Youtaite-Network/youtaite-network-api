@@ -14,7 +14,7 @@ class Collab < ApplicationRecord
         min = [first, second].min
         max = [first, second].max
         edges += [[min, max]]
-        people_edges.push({
+        person_edges.push({
           person: person_id,
           edge: {source: min, target: max},
         })
@@ -37,7 +37,7 @@ class Collab < ApplicationRecord
         edge_to_freq[edge] = {i: -1, l: freq}
       end
     end
-    # for each elt in people_edges, add i (index) and l (length/freq)
+    # for each elt in person_edges, add i (index) and l (length/freq)
     person_edges.map! do |pe|
       freq = edge_to_freq[pe[:edge]]
       freq[:i] += 1
@@ -45,7 +45,7 @@ class Collab < ApplicationRecord
     end
     return {
       freq_to_edges: freq_to_edges,
-      person_edges: people_edges,
+      person_edges: person_edges,
     }
   end
 
