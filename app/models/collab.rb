@@ -8,7 +8,7 @@ class Collab < ApplicationRecord
 
   def self.edges
     edges = []
-    people_edges = []
+    person_edges = []
     Role.all.group_by(&:person_id).each do |person_id, roles|
       roles.map{|role| role.collab_id}.uniq.combination(2).to_a.each do |first, second|
         min = [first, second].min
@@ -38,14 +38,14 @@ class Collab < ApplicationRecord
       end
     end
     # for each elt in people_edges, add i (index) and l (length/freq)
-    people_edges.map! do |pe|
+    person_edges.map! do |pe|
       freq = edge_to_freq[pe[:edge]]
       freq[:i] += 1
       pe.merge(freq)
     end
     return {
       freq_to_edges: freq_to_edges,
-      people_edges: people_edges,
+      person_edges: people_edges,
     }
   end
 
