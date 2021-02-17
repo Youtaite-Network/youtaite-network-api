@@ -100,7 +100,7 @@ class RolesController < ApplicationController
         end
       end
     end
-    render json: 'Submitted', status: :ok
+    render plain: 'Submitted', status: :ok
   end
 
   # # PATCH/PUT /roles/1

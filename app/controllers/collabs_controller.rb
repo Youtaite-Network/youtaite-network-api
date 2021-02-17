@@ -24,7 +24,7 @@ class CollabsController < ApplicationController
     yt_id = params[:yt_id]
     info = get_collab_info(yt_id)
     if !info
-      render json: 'Could not find collab info', status: :not_found
+      render plain: 'Could not find collab info', status: :not_found
       return
     end
     render json: info, status: :ok
@@ -35,7 +35,7 @@ class CollabsController < ApplicationController
   #   @collab = Collab.new(collab_params)
   #   info = get_collab_info(collab_params[:yt_id])
   #   if !info
-  #     render json: 'Error getting collab info', status: :unprocessable_entity
+  #     render plain: 'Error getting collab info', status: :unprocessable_entity
   #     return
   #   end
   #   @collab.title, @collab.thumbnail = info.values_at(:title, :thumbnail)
@@ -50,11 +50,11 @@ class CollabsController < ApplicationController
   def new_random
     collab = Collab.where.not(id: Role.pluck(:collab_id)).order('RANDOM()').first
     if !collab
-      render json: 'No not-yet-analyzed collabs were found', status: :bad_request
+      render plain: 'No not-yet-analyzed collabs were found', status: :bad_request
     else
       info = get_collab_info(collab.yt_id)
       if !info
-        render json: 'Error getting collab info', status: :unprocessable_entity
+        render plain: 'Error getting collab info', status: :unprocessable_entity
       else
         render json: info, status: :ok
       end
@@ -74,12 +74,12 @@ class CollabsController < ApplicationController
   def destroy
     if @collab
       if @collab.destroy
-        render json: 'Destroyed', status: :ok
+        render plain: 'Destroyed', status: :ok
       else
-        render json: 'Not destroyed; attempt logged for further review', status: :bad_request
+        render plain: 'Not destroyed; attempt logged for further review', status: :bad_request
       end
     else
-      render json: 'Collab not found', status: :ok
+      render plain: 'Collab not found', status: :ok
     end
   end
 

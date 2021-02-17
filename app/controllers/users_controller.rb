@@ -10,7 +10,7 @@ class UsersController < ApplicationController
       })
     end
     set_headers user
-    render json: 'Signed in with Google', status: :ok
+    render plain: 'Signed in with Google', status: :ok
   end
 
   private

@@ -9,6 +9,6 @@ class ApplicationController < ActionController::API
   include ::ActionController::Cookies
   
   def welcome
-    render json: 'welcome', status: :ok
+    render plain: 'welcome', status: :ok
   end
 end

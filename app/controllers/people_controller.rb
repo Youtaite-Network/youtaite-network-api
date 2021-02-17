@@ -19,7 +19,7 @@ class PeopleController < ApplicationController
     @person = Person.new(person_params)
     info = get_person_info(person_params[:misc_id], person_params[:id_type])
     if !info
-      render json: 'Error getting person info', status: :unprocessable_entity
+      render plain: 'Error getting person info', status: :unprocessable_entity
       return
     end
     @person.name, @person.thumbnail = info.values_at(:name, :thumbnail)
@@ -36,7 +36,7 @@ class PeopleController < ApplicationController
     yt_id = params[:yt_id]
     info = get_person_info(yt_id, 'yt')
     if !info
-      render json: 'Could not find person info', status: :not_found
+      render plain: 'Could not find person info', status: :not_found
       return
     end
     render json: info, status: :ok
@@ -57,12 +57,12 @@ class PeopleController < ApplicationController
     elsif host == 'twitter'
       output = get_tw_person_from_url url
     else
-      render json: 'Host not recognized', status: :bad_request
+      render plain: 'Host not recognized', status: :bad_request
       return
     end
 
     if !output
-      render json: 'Could not find person info', status: :not_found
+      render plain: 'Could not find person info', status: :not_found
       return
     end
 
