@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   get '/collabs/new_random', to: 'collabs#new_random'
   delete '/collabs', to: 'collabs#destroy'
   get '/people/info/:yt_id', to: 'people#info'
-  get 'people/info_from_url/*url', to: 'people#info_from_url'
+  get 'people/info_from_url/*url', to: 'people#info_from_url', format: false
   post '/googlesignin', to: 'users#signin'
   post '/submit', to: 'roles#submit'
 end
