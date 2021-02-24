@@ -95,6 +95,7 @@ module YoutubeApiHelper
       thumbnail: response['items'][0]['snippet']['thumbnails']['medium']['url'],
       description: response['items'][0]['snippet']['description'],
       channel_id: response['items'][0]['snippet']['channelId'],
+      published_at: response['items'][0]['snippet']['publishedAt'],
     }
   end
 

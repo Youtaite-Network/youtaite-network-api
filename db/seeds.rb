@@ -1,7 +1,7 @@
 # include UsersHelper
 # include PeopleHelper
 # include TwitterApiHelper
-# include YoutubeApiHelper
+include YoutubeApiHelper
 
 # # INITIAL SETUP
 # Role.delete_all
@@ -156,3 +156,24 @@
 #     Rails.logger.error "Could not save tw person: #{person.name}. #{person.errors.full_messages}"
 #   end
 # end
+
+# GET PUBLISHED_AT FOR EACH COLLAB
+Collab.all.each do |c|
+  info = get_collab_info c.yt_id
+  if !info[:published_at]
+    Rails.logger.error "Could not get published_at info for collab: #{c.yt_id}"
+    next
+  end
+  begin
+    published_at = DateTime.parse(info[:published_at])
+  rescue Date::Error => error
+    Rails.logger.error "Could not parse #{info[:published_at]} into DateTime: #{error}"
+    next
+  end
+  c.update({
+    published_at: published_at,
+  })
+  if !c.save
+    Rails.logger.error "Could not save published_at for collab: #{c.yt_id}. #{c.errors.full_messages}"
+  end
+end

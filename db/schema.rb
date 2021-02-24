@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_02_13_214851) do
+ActiveRecord::Schema.define(version: 2021_02_24_001236) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 2021_02_13_214851) do
     t.string "title"
     t.string "thumbnail"
     t.integer "person_id"
+    t.datetime "published_at"
     t.index ["yt_id"], name: "index_collabs_on_yt_id", unique: true
   end
 
@@ -63,7 +64,6 @@ ActiveRecord::Schema.define(version: 2021_02_13_214851) do
     t.integer "role"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "user_id", null: false
     t.index ["collab_id", "person_id", "role"], name: "index_roles_on_collab_id_and_person_id_and_role", unique: true
   end
 
@@ -77,5 +77,4 @@ ActiveRecord::Schema.define(version: 2021_02_13_214851) do
 
   add_foreign_key "roles", "collabs"
   add_foreign_key "roles", "people"
-  add_foreign_key "roles", "users"
 end
