@@ -55,6 +55,7 @@ class RolesController < ApplicationController
         title: info[:title],
         thumbnail: info[:thumbnail],
         person_id: person.id,
+        published_at: info[:published_at],
       })
       if !collab.save
         Rails.logger.error collab.errors.full_messages
@@ -90,7 +91,6 @@ class RolesController < ApplicationController
         role = Role.new({
           collab_id: collab.id,
           person_id: person.id,
-          user_id: current_user.id,
           role: role_name,
         })
         if !role.save
