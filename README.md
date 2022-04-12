@@ -22,3 +22,6 @@ Things you may want to cover:
 * Deployment instructions
 
 * ...
+
+## License
+This project is licensed under the terms of the MIT license.
