@@ -1,6 +1,6 @@
 module PeopleHelper
   def get_person_info misc_id, id_type
-    person = Person.find_by(misc_id: misc_id)
+    person = Person.find_by(misc_id: misc_id, id_type: id_type)
     return person if person
     if id_type == 'yt'
       info = get_yt_person_from_id misc_id

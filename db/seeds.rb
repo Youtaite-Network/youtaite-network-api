@@ -1,179 +1,112 @@
-# include UsersHelper
-# include PeopleHelper
-# include TwitterApiHelper
+include UsersHelper
+include PeopleHelper
+include TwitterApiHelper
 include YoutubeApiHelper
 
-# # INITIAL SETUP
-# Role.delete_all
-# Person.delete_all
-# Collab.delete_all
-# User.delete_all
+# Create 'auditor' user.
+# If a user's audits need to be undone, the 'undo' audits are associated with the 'auditor'.
+User.create({
+  alt_user_id: 'auditor',
+  id_type: 'system',
+})
 
-# people = CSV.new(File.open('db/people.csv'))
-# people.each do |row|
-#   if row.empty?
-#     next
-#   end
-#   misc_id = row[0]
-#   if row.length == 2 # twitter/misc link
-#     id_type = row[1]
-#   elsif row[0].include? '[' # no link
-#     id_type = 'no_link'
-#   else # yt link
-#     id_type = 'yt'
-#   end
-#   display_name, thumbnail = get_person_info(misc_id, id_type).values_at(:name, :thumbnail)
-#   Person.create({
-#     misc_id: misc_id,
-#     id_type: id_type,
-#     name: display_name,
-#     thumbnail: thumbnail,
-#   })
-# end
-
-# collabs = CSV.new(File.open('db/collabs.csv'))
-# collabs.each do |row|
-#   if row.empty? or Collab.find_by(yt_id: row[0])
-#     next
-#   end
-#   info = get_collab_info row[0]
-#   if info.nil? # video could be private
-#     next
-#   end
-#   person_misc_id = info[:channel_id]
-#   person = Person.find_by(misc_id: person_misc_id)
-#   if !person
-#     person_info = get_person_info person_misc_id, 'yt'
-#     person = Person.new({
-#       misc_id: person_misc_id,
-#       id_type: 'yt',
-#       name: person_info[:name],
-#       thumbnail: person_info[:thumbnail],
-#     })
-#     if !person.save
-#       Rails.logger.error "Could not save person #{person_misc_id}: #{person.errors.full_messages}"
-#       next
-#     end
-#   end
-#   c = Collab.new({
-#     yt_id: row[0],
-#     title: info[:title],
-#     thumbnail: info[:thumbnail],
-#     person_id: person.id,
-#   })
-#   if !c.save
-#     Rails.logger.error "Could not save collab #{row[0]}: #{c.errors.full_messages}"
-#   end
-# end
-
-# User.create({
-#   alt_user_id: 'initial',
-#   id_type: 'system',
-# })
-
-# User.create({
-#   alt_user_id: 'auditor',
-#   id_type: 'system',
-# })
-
-# roles = CSV.new(File.open('db/roles.csv'))
-# roles.each do |row|
-#   if row.empty?
-#     next
-#   end
-#   collab = Collab.find_by(yt_id: row[0])
-#   if !collab
-#     next
-#   end
-#   collab_id = Collab.find_by(yt_id: row[0]).id
-#   person_id = Person.find_by(misc_id: row[1]).id
-#   user_id = User.find_by(alt_user_id: 'initial').id
-#   role = row[2]
-#   r = Role.new({
-#     collab_id: collab_id,
-#     person_id: person_id,
-#     user_id: user_id,
-#     role: role,
-#   })
-#   r.save
-#   puts r.errors.full_messages
-# end
-
-# # REFORMAT PEOPLE.CSV
-# contents = ''
-# people = CSV.new(File.open('db/people_withnames.csv'))
-# people.each do |row|
-#   if row.length == 1 # no link associated
-#     contents += row[0]
-#   elsif row.length == 2 # normal
-#     contents += row[1]
-#   elsif row.length == 3 # twitter/misc link
-#     contents += "#{row[1]},tw"
-#   else
-#     puts "ERROR:#{row.to_s}"
-#     next
-#   end
-#   contents += "\n"
-# end
-# File.open('db/people.csv', 'w'){ |f| f.write contents }
-
-# # GENERATE PERSON_ID FOR COLLABS
-# Collab.all.each do |collab|
-#   if collab.person_id
-#     next
-#   end
-#   person_misc_id = get_collab_info(collab.yt_id)[:channel_id]
-#   person = Person.find_by(misc_id: person_misc_id)
-#   if !person
-#     person_info = get_person_info person_misc_id, 'yt'
-#     person = Person.new({
-#       misc_id: person_misc_id,
-#       id_type: 'yt',
-#       name: person_info[:name],
-#       thumbnail: person_info[:thumbnail],
-#     })
-#     if !person.save
-#       Rails.logger.error "Could not save person #{person_misc_id}: #{person.errors.full_messages}"
-#     end
-#   end
-#   collab.person_id = person.id
-#   if !collab.save
-#     Rails.logger.error "Could not save collab #{collab.yt_id}: #{collab.errors.full_messages}"
-#   end
-# end
-
-# # GENERATE PERSON INFO FOR TW PEOPLE
-# Person.where(id_type: 'tw').each do |person|
-#   info = get_tw_person_from_url person.misc_id
-#   if !info
-#     Rails.logger.error "Could not retrieve information for tw person: #{person.misc_id}."
-#     next
-#   end
-#   person.name = info[:name]
-#   person.misc_id = info[:misc_id]
-#   person.thumbnail = info[:thumbnail]
-#   if !person.save
-#     Rails.logger.error "Could not save tw person: #{person.name}. #{person.errors.full_messages}"
-#   end
-# end
-
-# GET PUBLISHED_AT FOR EACH COLLAB
-Collab.all.each do |c|
-  info = get_collab_info c.yt_id
-  if !info[:published_at]
-    Rails.logger.error "Could not get published_at info for collab: #{c.yt_id}"
+# Create people
+people = CSV.new(File.open('db/people.csv'))
+people.each do |row|
+  if row.empty?
     next
   end
-  begin
-    published_at = DateTime.parse(info[:published_at])
-  rescue Date::Error => error
-    Rails.logger.error "Could not parse #{info[:published_at]} into DateTime: #{error}"
+
+  misc_id = row[0]
+  id_type = row[1]
+  if id_type == 'no_link'
+    person_info = {
+      id_type: id_type,
+      name: row[2],
+      misc_id: misc_id,
+      thumbnail: '#',
+    }
+  else
+    person_info = get_person_info(misc_id, id_type)
+    if person_info.nil? # account might not exist anymore
+      person_info = {
+        id_type: :no_link,
+        name: "formerly #{id_type} #{misc_id}",
+        misc_id: misc_id,
+        thumbnail: '#',
+      }
+    end
+  end
+
+  person = Person.new(person_info)
+  if !person.save_without_auditing
+    Rails.logger.error "Could not save #{id_type} person #{misc_id}. #{person.errors.full_messages}"
+  end
+end
+
+# Create collabs
+collabs = CSV.new(File.open('db/collabs.csv'))
+collabs.each do |row|
+  # skip if empty or already exists
+  if row.empty? or Collab.find_by(yt_id: row[0])
     next
   end
-  c.update({
-    published_at: published_at,
+
+  collab_info = get_collab_info row[0]
+  if collab_info.nil? # video could be private/deleted
+    next
+  end
+
+  # find the channel that posted the collab; if it doesn't exist in people table, create it
+  owner_misc_id = collab_info[:channel_id]
+  owner = Person.find_by(misc_id: owner_misc_id)
+  if !owner
+    owner_info = get_person_info owner_misc_id, 'yt'
+    owner = Person.new(owner_info)
+    if !owner.save_without_auditing
+      Rails.logger.error "Could not save yt person #{owner_misc_id}. #{owner.errors.full_messages}"
+      next
+    end
+  end
+
+  collab = Collab.new({
+    yt_id: row[0],
+    title: collab_info[:title],
+    thumbnail: collab_info[:thumbnail],
+    person_id: owner.id,
+    published_at: collab_info[:published_at],
   })
-  if !c.save
-    Rails.logger.error "Could not save published_at for collab: #{c.yt_id}. #{c.errors.full_messages}"
+  if !collab.save_without_auditing
+    Rails.logger.error "Could not save collab #{row[0]}. #{collab.errors.full_messages}"
+  end
+end
+
+# Create roles
+roles = CSV.new(File.open('db/roles.csv'))
+roles.each do |row|
+  if row.empty?
+    next
+  end
+
+  collab = Collab.find_by(yt_id: row[0])
+  if !collab
+    next
+  end
+
+  person = Person.find_by(misc_id: row[1])
+  if !person
+    next
+  end
+
+  collab_id = collab.id
+  person_id = person.id
+  role_type = row[2]
+  role = Role.new({
+    collab_id: collab_id,
+    person_id: person_id,
+    role: role_type, # todo: rename role column to role_type
+  })
+  if !role.save_without_auditing
+    Rails.logger.error "Could not save role #{role.inspect}. #{role.errors.full_messages}"
   end
 end
