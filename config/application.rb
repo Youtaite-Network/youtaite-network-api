@@ -43,7 +43,7 @@ module YoutaiteNetworkApi
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'https://youtaite-network.netlify.app', 'https://youtaite-network-test.netlify.app'
+        origins ENV['ACCEPTED_ORIGINS'].split(',')
         resource '*', 
           credentials: true,
           headers: :any, 
