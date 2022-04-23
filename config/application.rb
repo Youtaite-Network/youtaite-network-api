@@ -53,6 +53,7 @@ module YoutaiteNetworkApi
     end
 
     config.hosts << "youtaite-network-api.herokuapp.com"
+    config.hosts << "youtaite-network-api-staging.herokuapp.com"
     config.hosts << "localhost"
   end
 end
