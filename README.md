@@ -2,7 +2,7 @@
 
 ## Initial setup
 
-- Fork the repository
+- [Fork the repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
 - Clone your fork of the repository: `git clone git@github.com:<username>/youtaite-network-api.git`
   - If it doesn't work, you may have to [set up an SSH key with GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent)
 - Go into the repository directory: `cd youtaite-network-api`
