@@ -6,29 +6,30 @@ class UsersController < ApplicationController
     if user.nil?
       user = User.create({
         alt_user_id: session[:alt_user_id],
-        id_type: :google,
+        id_type: :google
       })
     end
     set_headers user
-    render plain: 'Signed in with Google', status: :ok
+    render plain: "Signed in with Google", status: :ok
   end
 
   private
-    # Only allow a trusted parameter "white list" through.
-    def user_params
-      params.permit(:idtoken)
-    end
 
-    def validate_id_token
-      validator = GoogleIDToken::Validator.new
-      begin
-        payload = validator.check(params[:idtoken], ENV['GOOGLE_CLIENT_ID'])
-        alt_user_id = payload['sub']
-        session[:alt_user_id] = alt_user_id
-        return true
-      rescue GoogleIDToken::ValidationError => e
-        puts "Cannot validate: #{e}"
-        render json: {message: 'Bad Request', reason: 'Error validating Google token ID'}, status: :bad_request
-      end
+  # Only allow a trusted parameter "white list" through.
+  def user_params
+    params.permit(:idtoken)
+  end
+
+  def validate_id_token
+    validator = GoogleIDToken::Validator.new
+    begin
+      payload = validator.check(params[:idtoken], ENV["GOOGLE_CLIENT_ID"])
+      alt_user_id = payload["sub"]
+      session[:alt_user_id] = alt_user_id
+      true
+    rescue GoogleIDToken::ValidationError => e
+      puts "Cannot validate: #{e}"
+      render json: {message: "Bad Request", reason: "Error validating Google token ID"}, status: :bad_request
     end
+  end
 end

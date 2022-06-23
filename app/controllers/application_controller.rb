@@ -7,8 +7,8 @@ class ApplicationController < ActionController::API
   include UrlHelper
   include AuditsHelper
   include ::ActionController::Cookies
-  
+
   def welcome
-    render plain: 'welcome', status: :ok
+    render plain: "welcome", status: :ok
   end
 end

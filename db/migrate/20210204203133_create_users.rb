@@ -9,7 +9,7 @@ class CreateUsers < ActiveRecord::Migration[6.0]
     add_index :users, :google_id, unique: true
     add_index :collabs, :yt_id, unique: true
     add_index :people, :misc_id, unique: true
-    
+
     change_column_null(:users, :google_id, false)
   end
 end

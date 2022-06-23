@@ -19,7 +19,7 @@ class PeopleController < ApplicationController
     @person = Person.new(person_params)
     info = get_person_info(person_params[:misc_id], person_params[:id_type])
     if !info
-      render plain: 'Error getting person info', status: :unprocessable_entity
+      render plain: "Error getting person info", status: :unprocessable_entity
       return
     end
     @person.name, @person.thumbnail = info.values_at(:name, :thumbnail)
@@ -34,9 +34,9 @@ class PeopleController < ApplicationController
   # GET /people/info/:yt_id
   def info
     yt_id = params[:yt_id]
-    info = get_person_info(yt_id, 'yt')
+    info = get_person_info(yt_id, "yt")
     if !info
-      render plain: 'Could not find person info', status: :not_found
+      render plain: "Could not find person info", status: :not_found
       return
     end
     render json: info, status: :ok
@@ -45,24 +45,24 @@ class PeopleController < ApplicationController
   # GET /people/info_from_url/:url
   def info_from_url
     url = params[:url]
-    if not (url.start_with? 'http')
+    if !(url.start_with? "http")
       url = "https://#{url}"
     end
     url = follow_redirects url
 
-    host = URI(url).host.split('.')[-2]
+    host = URI(url).host.split(".")[-2]
 
-    if host == 'youtube'
+    if host == "youtube"
       output = get_yt_person_from_url url
-    elsif host == 'twitter'
+    elsif host == "twitter"
       output = get_tw_person_from_url url
     else
-      render plain: 'Host not recognized', status: :bad_request
+      render plain: "Host not recognized", status: :bad_request
       return
     end
 
     if !output
-      render plain: 'Could not find person info', status: :not_found
+      render plain: "Could not find person info", status: :not_found
       return
     end
 
@@ -84,13 +84,14 @@ class PeopleController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_person
-      @person = Person.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def person_params
-      params.require(:person).permit(:misc_id, :id_type, :name, :thumbnail)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_person
+    @person = Person.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def person_params
+    params.require(:person).permit(:misc_id, :id_type, :name, :thumbnail)
+  end
 end

@@ -6,12 +6,12 @@ include YoutubeApiHelper
 # Create 'auditor' user.
 # If a user's audits need to be undone, the 'undo' audits are associated with the 'auditor'.
 User.create({
-  alt_user_id: 'auditor',
-  id_type: 'system',
+  alt_user_id: "auditor",
+  id_type: "system"
 })
 
 # Create people
-people = CSV.new(File.open('db/people.csv'))
+people = CSV.new(File.open("db/people.csv"))
 people.each do |row|
   if row.empty?
     next
@@ -19,12 +19,12 @@ people.each do |row|
 
   misc_id = row[0]
   id_type = row[1]
-  if id_type == 'no_link'
+  if id_type == "no_link"
     person_info = {
       id_type: id_type,
       name: row[2],
       misc_id: misc_id,
-      thumbnail: '#',
+      thumbnail: "#"
     }
   else
     person_info = get_person_info(misc_id, id_type)
@@ -33,7 +33,7 @@ people.each do |row|
         id_type: :no_link,
         name: "formerly #{id_type} #{misc_id}",
         misc_id: misc_id,
-        thumbnail: '#',
+        thumbnail: "#"
       }
     end
   end
@@ -45,7 +45,7 @@ people.each do |row|
 end
 
 # Create collabs
-collabs = CSV.new(File.open('db/collabs.csv'))
+collabs = CSV.new(File.open("db/collabs.csv"))
 collabs.each do |row|
   # skip if empty or already exists
   if row.empty? or Collab.find_by(yt_id: row[0])
@@ -61,7 +61,7 @@ collabs.each do |row|
   owner_misc_id = collab_info[:channel_id]
   owner = Person.find_by(misc_id: owner_misc_id)
   if !owner
-    owner_info = get_person_info owner_misc_id, 'yt'
+    owner_info = get_person_info owner_misc_id, "yt"
     owner = Person.new(owner_info)
     if !owner.save_without_auditing
       Rails.logger.error "Could not save yt person #{owner_misc_id}. #{owner.errors.full_messages}"
@@ -74,7 +74,7 @@ collabs.each do |row|
     title: collab_info[:title],
     thumbnail: collab_info[:thumbnail],
     person_id: owner.id,
-    published_at: collab_info[:published_at],
+    published_at: collab_info[:published_at]
   })
   if !collab.save_without_auditing
     Rails.logger.error "Could not save collab #{row[0]}. #{collab.errors.full_messages}"
@@ -82,7 +82,7 @@ collabs.each do |row|
 end
 
 # Create roles
-roles = CSV.new(File.open('db/roles.csv'))
+roles = CSV.new(File.open("db/roles.csv"))
 roles.each do |row|
   if row.empty?
     next
@@ -104,7 +104,7 @@ roles.each do |row|
   role = Role.new({
     collab_id: collab_id,
     person_id: person_id,
-    role: role_type, # todo: rename role column to role_type
+    role: role_type # todo: rename role column to role_type
   })
   if !role.save_without_auditing
     Rails.logger.error "Could not save role #{role.inspect}. #{role.errors.full_messages}"

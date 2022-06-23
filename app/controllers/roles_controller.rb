@@ -28,7 +28,7 @@ class RolesController < ApplicationController
   # POST /roles/submit
   def submit
     # find collab
-    yt_id = params['yt_id']
+    yt_id = params["yt_id"]
     # find or create collab
     collab = Collab.find_by(yt_id: yt_id)
     if collab.nil?
@@ -37,12 +37,12 @@ class RolesController < ApplicationController
       person_misc_id = info[:channel_id]
       person = Person.find_by(misc_id: person_misc_id)
       if !person
-        person_info = get_person_info person_misc_id, 'yt'
+        person_info = get_person_info person_misc_id, "yt"
         person = Person.new({
           misc_id: person_misc_id,
-          id_type: 'yt',
+          id_type: "yt",
           name: person_info[:name],
-          thumbnail: person_info[:thumbnail],
+          thumbnail: person_info[:thumbnail]
         })
         if !person.save
           Rails.logger.error person.errors.full_messages
@@ -55,7 +55,7 @@ class RolesController < ApplicationController
         title: info[:title],
         thumbnail: info[:thumbnail],
         person_id: person.id,
-        published_at: info[:published_at],
+        published_at: info[:published_at]
       })
       if !collab.save
         Rails.logger.error collab.errors.full_messages
@@ -64,21 +64,21 @@ class RolesController < ApplicationController
       end
     end
     # find each person
-    params['people'].each do |person_obj|
+    params["people"].each do |person_obj|
       # try to find using :id
-      person = Person.find_by(id: person_obj['id'])
+      person = Person.find_by(id: person_obj["id"])
       if person.nil?
         # try to find through misc_id
-        person = Person.find_by(misc_id: person_obj['misc_id'])
+        person = Person.find_by(misc_id: person_obj["misc_id"])
       end
       if person.nil?
         # create new person
-        display_name, misc_id, id_type, thumbnail = person_obj.values_at('name', 'misc_id', 'id_type', 'thumbnail')
+        display_name, misc_id, id_type, thumbnail = person_obj.values_at("name", "misc_id", "id_type", "thumbnail")
         person = Person.new({
           name: display_name,
           misc_id: misc_id,
           id_type: id_type,
-          thumbnail: thumbnail,
+          thumbnail: thumbnail
         })
         if !person.save
           Rails.logger.error person.errors.full_messages
@@ -87,11 +87,11 @@ class RolesController < ApplicationController
         end
       end
       # add roles
-      (person_obj['roles'] || []).each do |role_name|
+      (person_obj["roles"] || []).each do |role_name|
         role = Role.new({
           collab_id: collab.id,
           person_id: person.id,
-          role: role_name,
+          role: role_name
         })
         if !role.save
           Rails.logger.error role.errors.full_messages
@@ -100,7 +100,7 @@ class RolesController < ApplicationController
         end
       end
     end
-    render plain: 'Submitted', status: :ok
+    render plain: "Submitted", status: :ok
   end
 
   # # PATCH/PUT /roles/1
@@ -118,13 +118,14 @@ class RolesController < ApplicationController
   # end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_role
-      @role = Role.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def role_params
-      params.require(:role).permit(:role, :person_id, :collab_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_role
+    @role = Role.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def role_params
+    params.require(:role).permit(:role, :person_id, :collab_id)
+  end
 end

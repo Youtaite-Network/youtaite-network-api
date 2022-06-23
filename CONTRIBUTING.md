@@ -8,7 +8,7 @@ Thanks so much for wanting to contribute! Feel free to email (lyn.youtaite@gmail
 2. Pick an issue. Read through the description. If you have any questions, feel free to comment on the issue, or ask me directly.
 3. If you decide you want to work on it, comment on the issue. I will assign it to you and set the status to "In Progress".
 4. Fork both repositories if you haven't already, and clone the forks. If you've already forked the repository before, don't forget to [sync your fork](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork) before writing new code.
-5. From the main branch of the repository you are writing code in, create a new branch with the issue number (eg, `git checkout -b #29`).
+5. From the main branch of the repository you are writing code in, create a new branch with the issue number (eg, `git checkout -b #29` or `git checkout -b #29_filter-sort-collabs`).
 6. Write the code. Any commit messages should contain the issue number and a description of what was done (eg, `#29 Add filtering/sorting to collabs route`).
 7. When you're finished, [make a pull request to the original repository's main branch](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request-from-a-fork).
 8. I'll review the code. After the pull request is approved, merge it.

@@ -24,7 +24,7 @@ class CollabsController < ApplicationController
     yt_id = params[:yt_id]
     info = get_collab_info(yt_id)
     if !info
-      render plain: 'Could not find collab info', status: :not_found
+      render plain: "Could not find collab info", status: :not_found
       return
     end
     render json: info, status: :ok
@@ -48,13 +48,13 @@ class CollabsController < ApplicationController
 
   # GET /collabs/new_random
   def new_random
-    collab = Collab.where.not(id: Role.pluck(:collab_id)).order('RANDOM()').first
+    collab = Collab.where.not(id: Role.pluck(:collab_id)).order("RANDOM()").first
     if !collab
-      render plain: 'No not-yet-analyzed collabs were found', status: :bad_request
+      render plain: "No not-yet-analyzed collabs were found", status: :bad_request
     else
       info = get_collab_info(collab.yt_id)
       if !info
-        render plain: 'Error getting collab info', status: :unprocessable_entity
+        render plain: "Error getting collab info", status: :unprocessable_entity
       else
         render json: info, status: :ok
       end
@@ -74,24 +74,25 @@ class CollabsController < ApplicationController
   def destroy
     if @collab
       if @collab.destroy
-        render plain: 'Destroyed', status: :ok
+        render plain: "Destroyed", status: :ok
       else
-        render plain: 'Not destroyed; attempt logged for further review', status: :bad_request
+        render plain: "Not destroyed; attempt logged for further review", status: :bad_request
       end
     else
-      render plain: 'Collab not found', status: :ok
+      render plain: "Collab not found", status: :ok
     end
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_collab
-      @collab = Collab.find_by(yt_id: params[:yt_id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def collab_params
-      Rails.logger.debug params
-      params.require(:collab).permit(:yt_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_collab
+    @collab = Collab.find_by(yt_id: params[:yt_id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def collab_params
+    Rails.logger.debug params
+    params.require(:collab).permit(:yt_id)
+  end
 end
