@@ -3,6 +3,6 @@ class Person < ApplicationRecord
   has_many :roles
   has_many :collabs, through: :roles
   has_many :collabs
-  validates :misc_id, :presence => true, :uniqueness => true
+  validates :misc_id, presence: true, uniqueness: true
   audited
 end

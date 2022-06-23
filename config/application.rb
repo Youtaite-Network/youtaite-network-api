@@ -1,4 +1,4 @@
-require_relative 'boot'
+require_relative "boot"
 
 require "rails"
 # Pick the frameworks you want:
@@ -40,15 +40,14 @@ module YoutaiteNetworkApi
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
 
-
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins ENV['ACCEPTED_ORIGINS'].split(',')
-        resource '*', 
+        origins ENV["ACCEPTED_ORIGINS"].split(",")
+        resource "*",
           credentials: true,
-          headers: :any, 
+          headers: :any,
           methods: [:get, :post, :delete],
-          expose: ['Access-Token', 'Access-Token-Expiry']
+          expose: ["Access-Token", "Access-Token-Expiry"]
       end
     end
 
