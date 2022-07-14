@@ -2,7 +2,7 @@ module UrlHelper
   def follow_redirects url, max_redirects = 10
     stop_count = 0
     prev_url = ""
-    while !url.nil? and stop_count < max_redirects
+    while !url.nil? && stop_count < max_redirects
       res = Net::HTTP.get_response(URI(url))
       prev_url = url
       url = res["location"]

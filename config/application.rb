@@ -34,7 +34,7 @@ module YoutaiteNetworkApi
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
 
-    Rails.logger = Logger.new(STDOUT)
+    Rails.logger = Logger.new($stdout)
     config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
 
     config.middleware.use ActionDispatch::Cookies
