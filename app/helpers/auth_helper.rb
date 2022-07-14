@@ -28,6 +28,7 @@ module AuthHelper
       token
     end
   rescue JWT::DecodeError => error
+    Rails.logger.error "Error decoding JWT token #{token}: #{error}"
     [{}]
   end
 

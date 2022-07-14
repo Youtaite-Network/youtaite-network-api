@@ -48,7 +48,7 @@ module YoutubeApiHelper
   def get_yt_person_from_c_url c_url
     Rails.logger.debug "Beginning web-scraping on #{c_url}"
     begin
-      doc = Nokogiri::HTML(URI.open(c_url))
+      doc = Nokogiri::HTML(URI.parse(c_url).open)
     rescue OpenURI::HTTPError
       return
     end
@@ -118,7 +118,7 @@ module YoutubeApiHelper
 
   # todo: make this private
   def yt_no_results response, id
-    if response["items"].nil? or response["items"].empty?
+    if response["items"].nil? || response["items"].empty?
       Rails.logger.error "Could not find YT items matching: #{id}. Is it private?"
       return true
     end

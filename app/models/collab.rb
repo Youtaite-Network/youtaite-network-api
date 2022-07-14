@@ -28,12 +28,10 @@ class Collab < ApplicationRecord
     }
   end
 
-  private
-
   # Create and return a hash from frequency (aka edge weight)
   # to an array of hashes, where each represents an edge
   # with a source and a target
-  def self.calc_freq_to_edges edge_to_freq
+  private_class_method def self.calc_freq_to_edges edge_to_freq
     # create {freq => [[source, target], ...]} hash
     freq_to_edges = {}
     edge_to_freq.each do |edge, freq|
@@ -45,7 +43,7 @@ class Collab < ApplicationRecord
     end.to_h
   end
 
-  def self.calc_person_edges person_edges, edge_to_freq
+  private_class_method def self.calc_person_edges person_edges, edge_to_freq
     # create {edge: {index, length}} hash
     edge_to_index_length = edge_to_freq.map do |edge, freq|
       [edge, {i: -1, l: freq}]
@@ -64,10 +62,12 @@ class Collab < ApplicationRecord
   end
 
   # Transform an edge with format [source, target] to {source, target}
-  def self.edge_to_h edge
+  private_class_method def self.edge_to_h edge
     source, target = edge
     {source: source, target: target}
   end
+
+  private
 
   def check_roles
     if roles.any?

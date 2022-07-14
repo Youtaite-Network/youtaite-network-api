@@ -83,6 +83,7 @@ class RolesController < ApplicationController
         if !person.save
           Rails.logger.error person.errors.full_messages
           render json: person.errors.messages, status: :bad_request
+          # todo roll back other changes/make this transactional?
           return
         end
       end
@@ -96,6 +97,7 @@ class RolesController < ApplicationController
         if !role.save
           Rails.logger.error role.errors.full_messages
           render json: role.errors.messages, status: :bad_request
+          # todo roll back other changes/make this transactional?
           return
         end
       end
