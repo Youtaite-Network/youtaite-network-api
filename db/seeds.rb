@@ -1,10 +1,10 @@
-module DatabaseSeeder
+class DatabaseSeeder
   include UsersHelper
   include PeopleHelper
   include TwitterApiHelper
   include YoutubeApiHelper
 
-  def self.seed
+  def seed
     # Create 'auditor' user.
     # If a user's audits need to be undone, the 'undo' audits are associated with the 'auditor'.
     User.create({
@@ -13,6 +13,7 @@ module DatabaseSeeder
     })
 
     # Create people
+    Rails.logger.info "Creating people..."
     people = CSV.new(File.open("db/people.csv"))
     people.each do |row|
       if row.empty?
@@ -45,8 +46,10 @@ module DatabaseSeeder
         Rails.logger.error "Could not save #{id_type} person #{misc_id}. #{person.errors.full_messages}"
       end
     end
+    Rails.logger.info "Creating people... Done."
 
     # Create collabs
+    Rails.logger.info "Creating collabs..."
     collabs = CSV.new(File.open("db/collabs.csv"))
     collabs.each do |row|
       # skip if empty or already exists
@@ -82,8 +85,10 @@ module DatabaseSeeder
         Rails.logger.error "Could not save collab #{row[0]}. #{collab.errors.full_messages}"
       end
     end
+    Rails.logger.info "Creating collabs... Done."
 
     # Create roles
+    Rails.logger.info "Creating roles..."
     roles = CSV.new(File.open("db/roles.csv"))
     roles.each do |row|
       if row.empty?
@@ -112,7 +117,8 @@ module DatabaseSeeder
         Rails.logger.error "Could not save role #{role.inspect}. #{role.errors.full_messages}"
       end
     end
+    Rails.logger.info "Creating roles... Done."
   end
 end
 
-DatabaseSeeder.seed
+DatabaseSeeder::new.seed

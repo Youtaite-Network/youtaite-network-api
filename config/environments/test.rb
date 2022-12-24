@@ -6,6 +6,8 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
+
   config.cache_classes = false
   config.action_view.cache_template_loading = true
 
