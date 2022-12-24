@@ -35,7 +35,6 @@ module YoutaiteNetworkApi
     config.api_only = true
 
     Rails.logger = Logger.new($stdout)
-    config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
@@ -51,8 +50,10 @@ module YoutaiteNetworkApi
       end
     end
 
-    config.hosts << "youtaite-network-api.herokuapp.com"
-    config.hosts << "youtaite-network-api-staging.herokuapp.com"
+    config.hosts << "youtaite-network-api.fly.dev"
+    config.hosts << "youtaite-network-api-staging.fly.dev"
+    # config.hosts << "youtaite-network-api.herokuapp.com"
+    # config.hosts << "youtaite-network-api-staging.herokuapp.com"
     config.hosts << "localhost"
   end
 end
