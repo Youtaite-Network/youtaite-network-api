@@ -1,5 +1,7 @@
 # Youtaite Network API
 
+[Check out the deployed website here](https://youtaite-network.fly.dev).
+
 ## Initial setup
 
 - [Fork the repository](https://docs.github.com/en/get-started/quickstart/fork-a-repo)

@@ -39,21 +39,8 @@ module YoutaiteNetworkApi
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
 
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        origins ENV["ACCEPTED_ORIGINS"].split(",")
-        resource "*",
-          credentials: true,
-          headers: :any,
-          methods: [:get, :post, :delete],
-          expose: ["Access-Token", "Access-Token-Expiry"]
-      end
-    end
-
     config.hosts << "youtaite-network-api.fly.dev"
     config.hosts << "youtaite-network-api-staging.fly.dev"
-    # config.hosts << "youtaite-network-api.herokuapp.com"
-    # config.hosts << "youtaite-network-api-staging.herokuapp.com"
     config.hosts << "localhost"
   end
 end

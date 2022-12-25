@@ -1,8 +1,9 @@
 # Helper methods for the YouTube Data v3 API.
-# Note: Heroku does not provide a static IP address from which requests will be sent.
+# Note: Fly.io does not provide a static IP address from which requests will be sent.
 # The Fixie add-on allows requests to be sent through a provided proxy server, which
 # "fixes" the IP address that the request is sent from. This is required for using
-# the YouTube API because the API key is restricted by IP address.
+# the YouTube API because the API key is restricted by IP address. Technically, Fixie
+# is a Heroku add-on, but it seems to work fine even though the API is now hosted on Fly.
 # todo: abstract out building the HTTP request
 module YoutubeApiHelper
   def get_yt_person_from_id id
