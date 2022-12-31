@@ -1,6 +1,9 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  config.hosts << "youtaite-network-api.fly.dev"
+  config.hosts << "youtaite-network-api-staging.fly.dev"
+
   # Code is not reloaded between requests.
   config.cache_classes = true
 

@@ -1,6 +1,7 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  config.hosts << "localhost"
   config.logger = ActiveSupport::Logger.new("log/#{Rails.env}.log")
 
   # In the development environment your application's code is reloaded on

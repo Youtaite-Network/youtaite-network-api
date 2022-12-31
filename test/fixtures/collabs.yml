@@ -1,7 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  yt_id: MyString
+  yt_id: yt_id 1
+  title: Collab One
+  thumbnail: thumbnail
+  person_id: 1
+  published_at: <%= Time.now %>
 
 two:
-  yt_id: MyString
+  yt_id: yt_id 2
+  title: Collab Two
+  thumbnail: thumbnail
+  person_id: 2
+  published_at: <%= Time.now %>
