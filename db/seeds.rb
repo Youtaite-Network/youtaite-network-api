@@ -121,4 +121,4 @@ class DatabaseSeeder
   end
 end
 
-DatabaseSeeder::new.seed
+DatabaseSeeder.new.seed
