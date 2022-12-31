@@ -38,9 +38,5 @@ module YoutaiteNetworkApi
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
-
-    config.hosts << "youtaite-network-api.fly.dev"
-    config.hosts << "youtaite-network-api-staging.fly.dev"
-    config.hosts << "localhost"
   end
 end

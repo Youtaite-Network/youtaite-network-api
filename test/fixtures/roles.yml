@@ -8,4 +8,14 @@ one:
 two:
   person_id: 1
   collab_id: 1
-  role: 1
+  role: 2
+
+four:
+  person_id: 2
+  collab_id: 1
+  role: 3
+
+three:
+  person_id: 1
+  collab_id: 2
+  role: 2

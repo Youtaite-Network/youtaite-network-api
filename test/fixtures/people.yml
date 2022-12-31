@@ -1,7 +1,15 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  yt_link: MyString
+  id: 1
+  misc_id: misc_id 1
+  id_type: yt
+  name: Person One
+  thumbnail: thumbnail
 
 two:
-  yt_link: MyString
+  id: 2
+  misc_id: misc_id 2
+  id_type: tw
+  name: Person Two
+  thumbnail: thumbnail

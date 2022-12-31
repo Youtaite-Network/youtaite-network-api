@@ -45,7 +45,9 @@ module AuthHelper
     if alt_user_id.nil?
       alt_user_id = decoded_token[0]["alt_user_id"]
     end
-    User.find_by(alt_user_id: alt_user_id)
+    user = User.find_by(alt_user_id: alt_user_id)
+    session[:alt_user_id] = alt_user_id if user
+    user
   end
 
   def logged_in?

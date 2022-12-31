@@ -4,9 +4,21 @@ class RolesController < ApplicationController
 
   # GET /roles
   def index
-    @roles = Role.all
+    index_params = params.permit(:person_id, :collab_id, :role, :fields)
+    roles = Role.where(index_params.slice(:person_id, :collab_id, :role))
 
-    render json: @roles
+    # Set `fields` to the intersection of the given field names and the available columns
+    fields = (index_params[:fields].split(",") & Role.column_names) if index_params[:fields]
+    fields ||= [:person_id, :collab_id, :role] # Default value
+
+    if fields.any?
+      roles = roles.pluck(*fields).map do |field_values|
+        # `pluck` returns an array of arrays, so turn it into an array of hashes
+        fields.zip([*field_values]).to_h
+      end
+    end
+
+    render json: roles
   end
 
   # GET /roles/1
@@ -16,7 +28,8 @@ class RolesController < ApplicationController
 
   # POST /roles
   def create
-    @role = Role.new(role_params)
+    create_params = params.permit(:role, :person_id, :collab_id)
+    @role = Role.new(create_params)
 
     if @role.save
       render json: @role, status: :created, location: @role
@@ -47,6 +60,7 @@ class RolesController < ApplicationController
         if !person.save
           Rails.logger.error person.errors.full_messages
           render json: person.errors.messages, status: :bad_request
+          return
         end
       end
       # create collab
@@ -105,29 +119,10 @@ class RolesController < ApplicationController
     render plain: "Submitted", status: :ok
   end
 
-  # # PATCH/PUT /roles/1
-  # def update
-  #   if @role.update(role_params)
-  #     render json: @role
-  #   else
-  #     render json: @role.errors, status: :unprocessable_entity
-  #   end
-  # end
-
-  # # DELETE /roles/1
-  # def destroy
-  #   @role.destroy
-  # end
-
   private
 
   # Use callbacks to share common setup or constraints between actions.
   def set_role
     @role = Role.find(params[:id])
-  end
-
-  # Only allow a trusted parameter "white list" through.
-  def role_params
-    params.require(:role).permit(:role, :person_id, :collab_id)
   end
 end
