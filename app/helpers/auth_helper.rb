@@ -42,11 +42,13 @@ module AuthHelper
 
   def current_user
     alt_user_id = session[:alt_user_id]
-    if alt_user_id.nil?
+    if alt_user_id.nil? && request.headers["Authorization"]
       alt_user_id = decoded_token[0]["alt_user_id"]
     end
-    user = User.find_by(alt_user_id: alt_user_id)
-    session[:alt_user_id] = alt_user_id if user
+    if !alt_user_id.nil?
+      user = User.find_by(alt_user_id: alt_user_id)
+      session[:alt_user_id] = alt_user_id if user
+    end
     user
   end
 
