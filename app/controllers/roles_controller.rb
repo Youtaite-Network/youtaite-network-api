@@ -5,10 +5,12 @@ class RolesController < ApplicationController
   # GET /roles
   def index
     index_params = params.permit(:person_id, :collab_id, :role, :fields)
-    roles = Role.where(index_params.slice(:person_id, :collab_id, :role))
+    where_params = index_params.slice(:person_id, :collab_id, :role)
+      .transform_values { |value| value.split(",") }
+    roles = Role.where(where_params)
 
     # Set `fields` to the intersection of the given field names and the available columns
-    fields = (index_params[:fields].split(",") & Role.column_names) if index_params[:fields]
+    fields = index_params[:fields]&.split(",") & Role.column_names
     fields ||= [:person_id, :collab_id, :role] # Default value
 
     if fields.any?
