@@ -38,5 +38,7 @@ module YoutaiteNetworkApi
 
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
+
+    config.active_record.legacy_connection_handling = false
   end
 end
