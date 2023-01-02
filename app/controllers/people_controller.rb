@@ -4,9 +4,23 @@ class PeopleController < ApplicationController
 
   # GET /people
   def index
-    @people = Person.all
+    index_params = params.permit(:id, :misc_id, :id_type, :name, :fields)
+    where_params = index_params.slice(:id, :misc_id, :id_type, :name)
+      .transform_values { |value| value.split(",") }
+    people = Person.where(where_params)
 
-    render json: @people
+    # Set `fields` to the intersection of the given field names and the available columns
+    fields = index_params[:fields]&.split(",") & Person.column_names
+    fields ||= [:id, :misc_id, :id_type, :name, :thumbnail] # Default value
+
+    if fields.any?
+      people = people.pluck(*fields).map do |field_values|
+        # `pluck` returns an array of arrays, so turn it into an array of hashes
+        fields.zip([*field_values]).to_h
+      end
+    end
+
+    render json: people
   end
 
   # GET /people/1

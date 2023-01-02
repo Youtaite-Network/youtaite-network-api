@@ -1,6 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
+  id: 1
   yt_id: yt_id 1
   title: Collab One
   thumbnail: thumbnail
@@ -8,6 +9,7 @@ one:
   published_at: <%= Time.now %>
 
 two:
+  id: 2
   yt_id: yt_id 2
   title: Collab Two
   thumbnail: thumbnail
